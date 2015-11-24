@@ -1,25 +1,6 @@
 django-alexa
 ============
 
-.. image:: https://pypip.in/py_versions/django-alexa/badge.svg?style=flat
-        :target: https://pypi.python.org/pypi/django-alexa/
-
-.. image:: https://pypip.in/license/django-alexa/badge.svg?style=flat
-        :target: https://pypi.python.org/pypi/django-alexa/
-
-.. image:: https://pypip.in/download/django-alexa/badge.svg?style=flat
-        :target: https://pypi.python.org/pypi/django-alexa/
-
-.. image:: https://pypip.in/version/django-alexa/badge.svg?style=flat
-        :target: https://pypi.python.org/pypi/django-alexa/
-
-.. image:: https://pypip.in/wheel/django-alexa/badge.svg?style=flat
-        :target: https://pypi.python.org/pypi/django-alexa/
-
-.. image:: https://requires.io/github/rocktavious/django-alexa/requirements.png?branch=master
-        :target: https://requires.io/github/rocktavious/django-alexa/requirements/?branch=master
-        :alt: Requirements Status
-
 Amazon Alexa Skills Kit integration for Django
 
 The django-alexa framework leverages the django-rest-framework package to support

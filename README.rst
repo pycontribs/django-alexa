@@ -49,10 +49,10 @@ In your django urls.py add the following:
 
 .. code-block:: python
 
-urlpatterns = [
-    url(r'^', include('django_alexa.urls')),
-    ...
-]
+    urlpatterns = [
+        url(r'^', include('django_alexa.urls')),
+        ...
+    ]
 
 Your django app will now have a new api endpoint at /alexa/ask
 that will handle all the incoming request routing to intents for all

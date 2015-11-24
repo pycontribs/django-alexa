@@ -1,6 +1,14 @@
 django-alexa
 ============
 
+.. image:: https://badge.fury.io/py/django-alexa.svg
+    :target: https://badge.fury.io/py/django-alexa
+    :alt: Version
+
+.. image:: https://requires.io/github/rocktavious/django-alexa/requirements.png?branch=master
+    :target: https://requires.io/github/rocktavious/django-alexa/requirements/?branch=master
+    :alt: Requirements Status
+
 Amazon Alexa Skills Kit integration for Django
 
 The django-alexa framework leverages the django-rest-framework package to support

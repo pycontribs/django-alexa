@@ -29,7 +29,7 @@ def validate_current_timestamp(value):
     value - a timestamp formatted in ISO 8601 (for example, 2015-05-13T12:34:56Z).
     """
     # TODO: flesh out current timestamp validation
-    pass 
+    pass
 
 
 def validate_char_limit(value):

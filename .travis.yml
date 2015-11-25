@@ -1,4 +1,10 @@
+sudo: false
 language: python
+before_cache:
+  - rm -f $HOME/.cache/pip/log/debug.log
+cache:
+  directories:
+    - $HOME/.cache/pip
 python:
     - "2.7"
 install: 
@@ -8,3 +14,5 @@ install:
 script: 
     - "flake8 django_alexa/"
     - "py.test --cov-report term --cov django_alexa django_alexa_tests/"
+after_success:
+  coveralls

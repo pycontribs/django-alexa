@@ -9,6 +9,7 @@ def LaunchRequest():
                                            reprompt="What would you like to do next?",
                                            end_session=False)
 
+
 @intent
 def CancelIntent():
     """Default Cancel Intent"""
@@ -16,10 +17,12 @@ def CancelIntent():
                                            reprompt="What would you like to do next?",
                                            end_session=False)
 
+
 @intent
 def StopIntent():
     """Default Stop Intent"""
     return ResponseBuilder.create_response(message="Stopping Actions. Goodbye!")
+
 
 @intent
 def HelpIntent():

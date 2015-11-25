@@ -28,7 +28,8 @@ def validate_current_timestamp(value):
     """
     value - a timestamp formatted in ISO 8601 (for example, 2015-05-13T12:34:56Z).
     """
-    pass # TODO: flesh out current timestamp validation
+    # TODO: flesh out current timestamp validation
+    pass
 
 
 def validate_char_limit(value):
@@ -46,6 +47,6 @@ def validate_alexa_request(value):
     """
     value - a django request object
     """
-    log.info(value.META.items())
     # TODO: validate alexa request headers
-    # see https://github.com/anjishnu/ask-alexa-pykit/blob/master/lib/validation_utils.py    
+    # see https://github.com/anjishnu/ask-alexa-pykit/blob/master/lib/validation_utils.py
+    log.info(value.META.items())

@@ -1,8 +1,7 @@
 from __future__ import absolute_import
 import logging
-import warnings
 from string import Formatter
-from rest_framework import serializers
+from rest_framework.serializers import ValidationError
 
 log = logging.getLogger(__name__)
 
@@ -29,6 +28,7 @@ UTTERANCES_OVERRIDE_INTENTS = [
     'StopIntent'
 ]
 
+
 class IntentsSchema():
     intents = {}
 
@@ -37,40 +37,40 @@ class IntentsSchema():
         """Routes an intent to the proper method"""
         if name not in cls.intents.keys():
             msg = "Unable to find an intent defined for '{0}'"
-            raise serializers.ValidationError(detail=msg.format(name))
+            raise ValidationError(detail=msg.format(name))
         kwargs = {}
-        func, serializer = cls.intents[name]
-        if serializer:
+        func, slot = cls.intents[name]
+        if slot:
             if data is None:
                 msg = "Intent '{0}' requires slots data and none was provided"
-                raise serializers.ValidationError(detail=msg.format(name))
+                raise ValidationError(detail=msg.format(name))
             else:
-                slots = serializer(data=data)
+                slots = slot(data=data)
                 slots.is_valid(raise_exception=True)
                 kwargs.update(slots.data)
         return func(**kwargs)
 
     @classmethod
-    def register(cls, func, name, serializer=None):
-        if serializer:
-            s = serializer()
+    def register(cls, func, name, slot=None):
+        if slot:
+            s = slot()
             for field_name, field in s.get_fields().items():
                 if field.__class__.__name__ not in VALID_SLOT_TYPES:
-                    msg = "'{0}' on serializer '{1}' is not a valid alexa slot type"
+                    msg = "'{0}' on slot '{1}' is not a valid alexa slot type"
                     raise ValueError(msg.format(field_name,
                                                 s.__class__.__name__))
-        cls.intents[name] = (func, serializer)
+        cls.intents[name] = (func, slot)
 
     @classmethod
     def generate_schema(cls):
         """Generates the alexa intents schema json"""
-        intents =[]
+        intents = []
         for intent_name in cls.intents.keys():
             intent_data = {"intent": intent_name,
                            "slots": []}
-            _, serializer = cls.intents[intent_name]
-            if serializer:
-                s = serializer()
+            _, slot = cls.intents[intent_name]
+            if slot:
+                s = slot()
                 for field_name, field in s.get_fields().items():
                     slot_type = INTENT_SLOT_TYPES.get(field.__class__.__name__,
                                                  field.label)
@@ -92,12 +92,12 @@ class IntentsSchema():
     def generate_utterances(cls):
         """Generates the alexa utterances schema for all intents"""
         utterance_format = "{0} {1}"
-        utterances =[]
+        utterances = []
         for intent_name in cls.intents.keys():
-            func, serializer = cls.intents[intent_name]
+            func, slot = cls.intents[intent_name]
             fields = []
-            if serializer:
-                s = serializer()
+            if slot:
+                s = slot()
                 fields = s.get_fields().keys()
             docstring = """"""
             if func.__doc__:
@@ -109,7 +109,7 @@ class IntentsSchema():
                     if "|" in key:
                         key = key.split("|")[-1]
                     if key not in fields:
-                        msg = "Intent '{0}' utterance '{1}' has a missing the key in the serializer '{2}'"
+                        msg = "Intent '{0}' utterance '{1}' has a missing the key in the slot '{2}'"
                         raise ValueError(msg.format(intent_name,
                                                     line,
                                                     s.__class__.__name__))
@@ -129,7 +129,7 @@ def intent(*args, **kwargs):
 
     def register(func):
         name = kwargs.get('name', func.__name__)
-        serializer = kwargs.get('serializer', None)
-        IntentsSchema.register(func, name, serializer)
+        slot = kwargs.get('slot', None)
+        IntentsSchema.register(func, name, slot)
         return func
     return register if invoked else register(func)

@@ -1,6 +1,7 @@
 from __future__ import absolute_import
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from ...api import IntentsSchema
+
 
 class Command(BaseCommand):
     help = 'Prints the Alexa Skills Kit utterances schema'

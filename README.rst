@@ -3,11 +3,15 @@ django-alexa
 
 .. image:: https://badge.fury.io/py/django-alexa.svg
     :target: https://badge.fury.io/py/django-alexa
-    :alt: Version
+    :alt: Current Version
+    
+.. image:: https://travis-ci.org/rocktavious/django-alexa.svg
+    :target: https://travis-ci.org/rocktavious/django-alexa
+    :alt: Build Status
 
-.. image:: https://requires.io/github/rocktavious/django-alexa/requirements.png?branch=master
-    :target: https://requires.io/github/rocktavious/django-alexa/requirements/?branch=master
-    :alt: Requirements Status
+.. image:: https://requires.io/github/rocktavious/django-alexa/requirements.svg?branch=master
+     :target: https://requires.io/github/rocktavious/django-alexa/requirements/?branch=master
+     :alt: Requirements Status
 
 Amazon Alexa Skills Kit integration for Django
 

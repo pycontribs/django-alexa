@@ -15,23 +15,23 @@ class ResponseBuilder(object):
                         end_session=True):
         """
         Shortcut to create a fully baked ASKResponseSerializer
-        
+
         Output Speech:
         message - text message to be spoken out by the Echo
         message_is_ssml - If true the "message" is ssml formated and should be treated as such
-        
+
         Reprompt Speech:
         reprompt - text message to be spoken out by the Echo
         reprompt_is_ssml - If true the "repropt" is ssml formated and should be treated as such
-        
+
         Card:
         card_type - A string describing the type of card to render.
         title - A string containing the title of the card. (not applicable for cards of type LinkAccount).
         content - A string containing the contents of the card (not applicable for cards of type LinkAccount).
                   Note that you can include line breaks in the content for a card of type Simple.
-        
+
         end_session - flag to determine whether this interaction should end the session
-        
+
         For more comprehensive documentation see:
         https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference
         """
@@ -72,7 +72,7 @@ class ResponseBuilder(object):
         reprompt = ASKRempromptSerializer(data=data)
         reprompt.is_valid(raise_exception=True)
         return reprompt
-     
+
     @classmethod
     def create_card(cls, title=None, content=None, card_type=None):
         data = {"type": card_type or "Simple"}

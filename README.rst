@@ -9,6 +9,10 @@ django-alexa
     :target: https://travis-ci.org/rocktavious/django-alexa
     :alt: Build Status
 
+.. image:: https://coveralls.io/repos/rocktavious/django-alexa/badge.svg?branch=master&service=github
+    :target: https://coveralls.io/github/rocktavious/django-alexa?branch=master
+    :alt: Coverage
+
 .. image:: https://requires.io/github/rocktavious/django-alexa/requirements.svg?branch=master
      :target: https://requires.io/github/rocktavious/django-alexa/requirements/?branch=master
      :alt: Requirements Status

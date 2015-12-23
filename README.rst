@@ -5,7 +5,7 @@ django-alexa
     :target: https://badge.fury.io/py/django-alexa
     :alt: Current Version
     
-.. image:: https://travis-ci.org/rocktavious/django-alexa.svg
+.. image:: https://travis-ci.org/rocktavious/django-alexa.svg?branch=master
     :target: https://travis-ci.org/rocktavious/django-alexa
     :alt: Build Status
 

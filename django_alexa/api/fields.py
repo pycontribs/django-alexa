@@ -8,6 +8,10 @@ INTENT_SLOT_TYPES = {
     "DateField": "AMAZON.DATE",
     "TimeField": "AMAZON.TIME",
     "DurationField": "AMAZON.DURATION",
+    "USCityField": "AMAZON.US_CITY",
+    "FirstNameField": "AMAZON.US_FIRST_NAME",
+    "USStateField": "AMAZON.US_STATE",
+    "FourDigitField": "AMAZON.FOUR_DIGIT_NUMBER",
 }
 
 # Choicefield does not have a amazon mapping because it represents
@@ -17,3 +21,23 @@ VALID_SLOT_TYPES = INTENT_SLOT_TYPES.keys() + [
     "ChoiceField"
 ]
 
+
+class USCityField(CharField):
+
+    def __init__(self, **kwargs):
+        super(USCityField, self).__init__(**kwargs)
+
+class FirstNameField(CharField):
+
+    def __init__(self, **kwargs):
+        super(FirstNameField, self).__init__(**kwargs)
+
+class USStateField(CharField):
+
+    def __init__(self, **kwargs):
+        super(USStateField, self).__init__(**kwargs)
+
+class FourDigitField(IntegerField):
+
+    def __init__(self, **kwargs):
+        super(FourDigitField, self).__init__(**kwargs)

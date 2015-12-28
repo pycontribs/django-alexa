@@ -172,3 +172,19 @@ for that intent.
 
 The django-alexa framework will throw errors when these management commands run
 if things seem to be out of place or incorrect.
+
+TODO
+----
+
+Outstanding improvements in order of importance
+
+* ASKOutputSpeechSerializer needs choice validation to validate that text or ssml is given
+* Add support for session variables
+* Needs Tests for ALL THE THINGS
+* Needs management command to output custom slot definitions
+* Investigate validation support for amazon slot types - add if needed
+** AMAZON.FOUR_DIGIT_NUMBER
+** AMAZON.US_CITY
+** AMAZON.US_FIRST_NAME
+** AMAZON.US_STATE
+* Allow multiple alexa skills to be served from one django project

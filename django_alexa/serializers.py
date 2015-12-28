@@ -28,20 +28,20 @@ class ASKUserSerializer(BaseASKSerializer):
 class ASKSessionSerializer(BaseASKSerializer):
     sessionId = serializers.CharField()
     application = ASKApplicationSerializer()
-    attributes = serializers.DictField(required=False)
+    attributes = serializers.DictField(required=False, allow_null=True)
     user = ASKUserSerializer()
     new = serializers.BooleanField()
 
 
 class ASKIntentSerializer(BaseASKSerializer):
     name = serializers.CharField()
-    slots = serializers.DictField()
+    slots = serializers.DictField(required=False, allow_null=True)
 
 
 class ASKRequestSerializer(BaseASKSerializer):
     type = serializers.CharField()
     requestId = serializers.CharField()
-    timestamp = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S")
+    timestamp = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%SZ")
     intent = ASKIntentSerializer(required=False)
     reason = serializers.CharField(required=False)
 
@@ -49,8 +49,8 @@ class ASKRequestSerializer(BaseASKSerializer):
 class ASKOutputSpeechSerializer(BaseASKSerializer):
     # TODO: Choice validation to check if text or ssml is filed
     type = serializers.ChoiceField(choices=("PlainText", "SSML"))
-    text = serializers.CharField()
-    ssml = serializers.CharField()
+    text = serializers.CharField(required=False)
+    ssml = serializers.CharField(required=False)
 
 
 class ASKCardSerializer(BaseASKSerializer):
@@ -80,15 +80,17 @@ class ASKSerializer(BaseASKSerializer):
     response = ASKResponseSerializer(read_only=True)
 
     def create(self, validated_data):
-        intent_name = validated_data["request"]["intent"]["name"]
+        # TODO: handle session attributes somehow
         intent_kwargs = {}
-        for slot, slot_data in validated_data["request"]["intent"]["slots"].items():
-            intent_kwargs[slot_data["name"]] = slot_data['value']
-        log.info("Routing: {0} - {1}".format(intent_name, intent_kwargs))
+        if validated_data["request"]["type"] == "IntentRequest":
+            intent_name = validated_data["request"]["intent"]["name"]
+            for slot, slot_data in validated_data["request"]["intent"].get("slots", {}).items():
+                intent_kwargs[slot_data["name"]] = slot_data['value']
+        else:
+            intent_name = validated_data["request"]["type"]
         response = IntentsSchema.route(intent_name, intent_kwargs)
         if isinstance(response, ASKResponseSerializer) is not True:
             msg = "Intent '{0}' does not return an ASKResponseSerializer"
             raise serializers.ValidationError(detail=msg.format(intent_name))
-        validated_data['response'] = response
-        # TODO: handle session attributes somehow
+        validated_data['response'] = response.validated_data
         return Obj(data=validated_data)

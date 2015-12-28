@@ -45,13 +45,13 @@ In your django settings.py add the following:
     ]
     
     # Note currently you cannot distinctly service multiple apps from one django project
-    # All intents and utterances will be generated for each app - known limitation
+    # All intents and utterances will be generated for each app with an "alexa.py"
     ALEXA_APP_IDS = ("Your Amazon Alexa App ID",)
-    ALEXA_CERT_FILEPATH = "path to cert file used for amazon alexa app"
-    ALEXA_PUBLIC_KEY_FILEPATH = "path the key file for the cert file"
+    ALEXA_ENABLE_REQUEST_VERIFICATON = True
 
 The ALEXA_* variables are used for incoming request validation for alexa
-skills request from amazon to your django app.
+skills request from amazon to your django app.  There is also a variable
+for turning this verification off during testing/debugging.
 
 In your django urls.py add the following:
 
@@ -68,6 +68,14 @@ amazon alexa skills pointed to this endpoint.
 
 In your django project make an alexa.py file.
 This file is where you define all your alexa intents and utterances.
+Each intent must return a valid alexa response.  To aid in this the
+django-alexa api provides a helper class called ResponseBuilder.
+This class has a function to speed up response building.
+
+Please see the documentation on the class for a summary of the details or head
+to https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference
+and checkout the more verbose documentation on proper alexa responses
+
 Example:
 
 .. code-block:: python
@@ -101,7 +109,7 @@ The django-alexa framework also provides two django management commands that
 will build your intents and utterances schema for you straight from the code.
 The django-alexa framework also defines some best practice intents to help
 get you up and running even faster, but allows you to easily override them,
-as seen above with the custom HelpIntent
+as seen above with the custom HelpIntent.
 
 .. code-block:: bash
 
@@ -147,7 +155,7 @@ as seen above with the custom HelpIntent
 .. code-block:: python
 
     >>> python manage.py alexa_utterances
-    AMAZON.HelpIntent this is my custom help utterance
+    HelpIntent this is my custom help utterance
     GetHoroscope what is the horoscope for {sign}
     GetHoroscope what will the horoscope for {sign} be on {date}
     GetHoroscope get me my horoscope
@@ -164,12 +172,3 @@ for that intent.
 
 The django-alexa framework will throw errors when these management commands run
 if things seem to be out of place or incorrect.
-
-Lastly, the django-alexa framework provides a help class to generate the
-kind of responses that alexa needs from your service.  This ResponseBuilder
-class has a number of arguments to it and maps pretty directly to the
-documentation on the alexa skills kit website about the response format.
-
-Please see the documentation on the class for a summary of the details or head
-to https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference
-and checkout the more verbose documentation on proper alexa responses

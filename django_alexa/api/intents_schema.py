@@ -2,31 +2,9 @@ from __future__ import absolute_import
 import logging
 from string import Formatter
 from rest_framework.serializers import ValidationError
+from .fields import INTENT_SLOT_TYPES, VALID_SLOT_TYPES
 
 log = logging.getLogger(__name__)
-
-# This maps DRF serializer fields to the amazon intent slot types
-INTENT_SLOT_TYPES = {
-    "CharField": "AMAZON.LITERAL",
-    "IntegerField": "AMAZON.NUMBER",
-    "DateField": "AMAZON.DATE",
-    "TimeField": "AMAZON.TIME",
-    "DurationField": "AMAZON.DURATION",
-}
-
-# These are the valid intent slot types
-# We add choicefield here because it represents custom slot types but has to
-# have a custom name mapping for the slot type which based on the field label
-VALID_SLOT_TYPES = INTENT_SLOT_TYPES.keys() + [
-    "ChoiceField"
-]
-
-# These utterances can have utterance overrides but need a prefix of "AMAZON."
-UTTERANCES_OVERRIDE_INTENTS = [
-    'HelpIntent',
-    'CancelIntent',
-    'StopIntent'
-]
 
 
 class IntentsSchema():
@@ -48,6 +26,7 @@ class IntentsSchema():
                 slots = slot(data=data)
                 slots.is_valid(raise_exception=True)
                 kwargs.update(slots.data)
+        log.info("Routing: '{0}' with args {1} to '{2}.{3}'".format(name, kwargs, func.__module__, func.__name__))
         return func(**kwargs)
 
     @classmethod
@@ -113,8 +92,6 @@ class IntentsSchema():
                         raise ValueError(msg.format(intent_name,
                                                     line,
                                                     s.__class__.__name__))
-                if intent_name in UTTERANCES_OVERRIDE_INTENTS:
-                    intent_name = "AMAZON.{0}".format(intent_name)
                 utterances.append(utterance_format.format(intent_name, line))
         return utterances
 

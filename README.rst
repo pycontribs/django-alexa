@@ -182,8 +182,8 @@ Outstanding improvements in order of importance
 * Needs Tests for ALL THE THINGS
 * Needs management command to output custom slot definitions
 * Investigate validation support for amazon slot types - add if needed
-** AMAZON.FOUR_DIGIT_NUMBER
-** AMAZON.US_CITY
-** AMAZON.US_FIRST_NAME
-** AMAZON.US_STATE
+    * AMAZON.FOUR_DIGIT_NUMBER
+    * AMAZON.US_CITY
+    * AMAZON.US_FIRST_NAME
+    * AMAZON.US_STATE
 * Allow multiple alexa skills to be served from one django project

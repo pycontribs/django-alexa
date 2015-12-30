@@ -5,7 +5,7 @@ import json
 import requests
 import base64
 import pytz
-from datetime import datetime
+from datetime import datetime, timedelta
 from urlparse import urlparse
 from OpenSSL import crypto
 from rest_framework.exceptions import ValidationError
@@ -41,9 +41,12 @@ def validate_current_timestamp(value):
     timestamp = datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
     utc_timestamp = pytz.utc.localize(timestamp)
     utc_timestamp_now = pytz.utc.localize(datetime.utcnow())
-    delta = utc_timestamp_now - utc_timestamp
-    log.info("Time drift is: {0}".format(delta.seconds))
-    return False if delta.seconds > 150 else True
+    delta = utc_timestamp - utc_timestamp_now
+    log.debug("DATE TIME CHECK!")
+    log.debug("Alexa: {0}".format(utc_timestamp))
+    log.debug("Server: {0}".format(utc_timestamp_now))
+    log.debug("Delta: {0}".format(delta))
+    return False if delta > timedelta(minutes=2, seconds=30) else True
 
 
 def validate_char_limit(value):
@@ -105,6 +108,6 @@ def validate_alexa_request(request_headers, request_body):
             raise ValidationError("Invalid Certificate Chain URL")
         if verify_signature(request_body, request_headers.get('HTTP_SIGNATURE'), request_headers.get('HTTP_SIGNATURECERTCHAINURL')) is False:
             raise ValidationError("Invalid Request Signature")
-        # timestamp = json.loads(request_body)['request']['timestamp']
-        # if validate_current_timestamp(timestamp) is False:
-        #     raise ValidationError("Invalid Request Timestamp")
+        timestamp = json.loads(request_body)['request']['timestamp']
+        if validate_current_timestamp(timestamp) is False:
+            raise ValidationError("Invalid Request Timestamp")

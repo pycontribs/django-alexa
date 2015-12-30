@@ -105,7 +105,6 @@ def validate_alexa_request(request_headers, request_body):
             raise ValidationError("Invalid Certificate Chain URL")
         if verify_signature(request_body, request_headers.get('HTTP_SIGNATURE'), request_headers.get('HTTP_SIGNATURECERTCHAINURL')) is False:
             raise ValidationError("Invalid Request Signature")
-        #timestamp = json.loads(request_body)['request']['timestamp']
-        #if validate_current_timestamp(timestamp) is False:
-        #    raise ValidationError("Invalid Request Timestamp")
-    
+        # timestamp = json.loads(request_body)['request']['timestamp']
+        # if validate_current_timestamp(timestamp) is False:
+        #     raise ValidationError("Invalid Request Timestamp")

@@ -1,5 +1,10 @@
 from __future__ import absolute_import
+import logging
+from rest_framework.exceptions import ValidationError
 from ..serializers import ASKResponseSerializer, ASKOutputSpeechSerializer, ASKRempromptSerializer, ASKCardSerializer
+
+
+log = logging.getLogger(__name__)
 
 
 class ResponseBuilder(object):
@@ -47,8 +52,13 @@ class ResponseBuilder(object):
         if reprompt:
             data['reprompt'] = cls.create_reprompt(message=reprompt,
                                                    is_ssml=reprompt_is_ssml)
+        log.debug("ASK RESPONSE : {0}".format(data))
         response = ASKResponseSerializer(data=data)
-        response.is_valid(raise_exception=True)
+        try:
+            response.is_valid(raise_exception=True)
+        except ValidationError as e:
+            log.exception("Error occured during response serialization!")
+            raise e
         return response
 
     @classmethod
@@ -62,7 +72,7 @@ class ResponseBuilder(object):
             data['text'] = message
         speech = ASKOutputSpeechSerializer(data=data)
         speech.is_valid(raise_exception=True)
-        return speech
+        return speech.validated_data
 
     @classmethod
     def create_reprompt(cls, message=None, is_ssml=False):
@@ -71,7 +81,7 @@ class ResponseBuilder(object):
                                                  is_ssml=is_ssml)
         reprompt = ASKRempromptSerializer(data=data)
         reprompt.is_valid(raise_exception=True)
-        return reprompt
+        return reprompt.validated_data
 
     @classmethod
     def create_card(cls, title=None, content=None, card_type=None):
@@ -80,4 +90,4 @@ class ResponseBuilder(object):
         if content: data["content"] = content
         card = ASKCardSerializer(data=data)
         card.is_valid(raise_exception=True)
-        return card
+        return card.validated_data

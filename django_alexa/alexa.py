@@ -3,7 +3,7 @@ from .api import intent, ResponseBuilder
 
 
 @intent
-def LaunchRequest():
+def LaunchRequest(session):
     """
     Default Start Session Intent
     ---
@@ -15,13 +15,13 @@ def LaunchRequest():
     load
     begin
     """
-    return ResponseBuilder.create_response(message="Welcome. Say help if you would like help. What would you like to do next?",
+    return ResponseBuilder.create_response(message="Welcome. What would you like to do next?",
                                            reprompt="What would you like to do next?",
                                            end_session=False)
 
 
 @intent
-def CancelIntent():
+def CancelIntent(session):
     """
     Default Cancel Intent
     ---
@@ -33,7 +33,7 @@ def CancelIntent():
 
 
 @intent
-def StopIntent():
+def StopIntent(session):
     """
     Default Stop Intent
     ---
@@ -44,7 +44,7 @@ def StopIntent():
 
 
 @intent
-def HelpIntent():
+def HelpIntent(session):
     """
     Default Help Intent
     ---
@@ -56,7 +56,7 @@ def HelpIntent():
 
 
 @intent
-def SessionEndedRequest():
+def SessionEndedRequest(session):
     """
     Default End Session Intent
     ---

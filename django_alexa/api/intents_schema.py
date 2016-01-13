@@ -1,31 +1,54 @@
 from __future__ import absolute_import
 import logging
 from string import Formatter
-from rest_framework.serializers import ValidationError
-from .fields import INTENT_SLOT_TYPES, VALID_SLOT_TYPES
+from .exceptions import InternalError
 
 log = logging.getLogger(__name__)
+
+# TODO: shore up these field declrations because they are DRF specific now
+
+# This maps fields to the amazon intent slot types
+INTENT_SLOT_TYPES = {
+    "CharField": "AMAZON.LITERAL",
+    "IntegerField": "AMAZON.NUMBER",
+    "DateField": "AMAZON.DATE",
+    "TimeField": "AMAZON.TIME",
+    "DurationField": "AMAZON.DURATION",
+    "USCityField": "AMAZON.US_CITY",
+    "FirstNameField": "AMAZON.US_FIRST_NAME",
+    "USStateField": "AMAZON.US_STATE",
+    "FourDigitField": "AMAZON.FOUR_DIGIT_NUMBER",
+}
+
+# Choicefield does not have a amazon mapping because it represents
+# a custom slot type which has to have a defined choice set in the
+# alexa skills kit interaction model
+VALID_SLOT_TYPES = INTENT_SLOT_TYPES.keys() + [
+    "ChoiceField"
+]
 
 
 class IntentsSchema():
     intents = {}
 
     @classmethod
-    def route(cls, name, data=None):
+    def route(cls, name, session, data):
         """Routes an intent to the proper method"""
+
         if name not in cls.intents.keys():
-            msg = "Unable to find an intent defined for '{0}'"
-            raise ValidationError(detail=msg.format(name))
+            msg = "Unable to find an intent defined for '{0}'".format(name)
+            raise InternalError(msg)
         kwargs = {}
         func, slot = cls.intents[name]
         if slot:
-            if data is None:
-                msg = "Intent '{0}' requires slots data and none was provided"
-                raise ValidationError(detail=msg.format(name))
+            if bool(data) is False:
+                msg = "Intent '{0}' requires slots data and none was provided".format(name)
+                raise InternalError(msg)
             else:
                 slots = slot(data=data)
                 slots.is_valid(raise_exception=True)
                 kwargs.update(slots.data)
+        kwargs['session'] = session.get('attributes', {})
         log.info("Routing: '{0}' with args {1} to '{2}.{3}'".format(name, kwargs, func.__module__, func.__name__))
         return func(**kwargs)
 
@@ -55,7 +78,7 @@ class IntentsSchema():
                                                  field.label)
                     if slot_type is None:
                         msg = "Intent '{0}' slot '{1}' does not have a valid slot_type"
-                        raise ValueError(msg.format(intent_name, field_name))
+                        raise InternalError(msg.format(intent_name, field_name))
                     if slot_type == "AMAZON.LITERAL":
                         msg = "Please upgrade intent '{0}' slot '{1}' to a ChoiceField with choices!"
                         log.warning(msg.format(intent_name, field_name))
@@ -92,7 +115,7 @@ class IntentsSchema():
                         raise ValueError(msg.format(intent_name,
                                                     line,
                                                     s.__class__.__name__))
-                utterances.append(utterance_format.format(intent_name, line))
+                utterances.append(utterance_format.format(intent_name, line.lower()))
         return utterances
 
 

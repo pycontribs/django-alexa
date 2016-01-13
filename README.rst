@@ -200,13 +200,13 @@ TODO
 
 Outstanding improvements in order of importance
 
-* ASKOutputSpeechSerializer needs choice validation to validate that text or ssml is given
-* Needs Tests for ALL THE THINGS
-* Needs management command to output custom slot definitions
-* Need to isolate code for managment commands so the api portion can become a seperate lib
-* Investigate validation support for amazon slot types - add if needed
-** AMAZON.FOUR_DIGIT_NUMBER
-** AMAZON.US_CITY
-** AMAZON.US_FIRST_NAME
-** AMAZON.US_STATE
-* Allow multiple alexa skills to be served from one django project
+- ASKOutputSpeechSerializer needs choice validation to validate that text or ssml is given
+- Needs Tests for ALL THE THINGS
+- Needs management command to output custom slot definitions
+- Need to isolate code for managment commands so the api portion can become a seperate lib
+- Investigate validation support for amazon slot types - add if needed
+    - AMAZON.FOUR_DIGIT_NUMBER
+    - AMAZON.US_CITY
+    - AMAZON.US_FIRST_NAME
+    - AMAZON.US_STATE
+-  Allow multiple alexa skills to be served from one django project

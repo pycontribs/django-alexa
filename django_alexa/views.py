@@ -3,7 +3,6 @@ import logging
 import traceback
 from django.conf import settings
 from rest_framework.response import Response
-from rest_framework.request import Request
 from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
 from .serializers import ASKInputSerializer
@@ -30,7 +29,6 @@ class ASKView(APIView):
             data = ResponseBuilder.create_response(message=msg)
         return Response(data=data, status=HTTP_200_OK)
 
-
     def handle_request(self, validated_data):
         log.info("Alexa Request Body: {0}".format(validated_data))
         intent_kwargs = {}
@@ -41,8 +39,8 @@ class ASKView(APIView):
                 slot_key = slot_data["name"]
                 try:
                     slot_value = slot_data['value']
-                except KeyError as e:
-                    msg = "Slot {0} had not value given".format(slot_key)
+                except KeyError:
+                    msg = "Slot {0} had no value given".format(slot_key)
                     raise InternalError(msg)
                 intent_kwargs[slot_key] = slot_value
         else:
@@ -63,8 +61,8 @@ class ASKView(APIView):
         return self.handle_request(serializer.validated_data)
 
     def dispatch(self, request, *args, **kwargs):
-        log.debug("#"*10+"Start Alexa Request"+"#"*10)
+        log.debug("#" * 10 + "Start Alexa Request" + "#" * 10)
         response = super(ASKView, self).dispatch(request, *args, **kwargs)
         validate_reponse_limit(response.render().content)
-        log.debug("#"*10+"End Alexa Request"+"#"*10)
+        log.debug("#" * 10 + "End Alexa Request" + "#" * 10)
         return response

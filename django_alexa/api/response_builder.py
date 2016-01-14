@@ -1,25 +1,27 @@
 from __future__ import absolute_import
 import logging
-from rest_framework.exceptions import ValidationError
-from ..serializers import ASKResponseSerializer, ASKOutputSpeechSerializer, ASKRempromptSerializer, ASKCardSerializer
-
 
 log = logging.getLogger(__name__)
 
 
 class ResponseBuilder(object):
     """
-    Simple class to help users to build alexa responses
+    Simple class to help users to build alexa response data
     """
+    version = ""
+
+    @classmethod
+    def set_version(cls, version):
+        cls.version = version
 
     @classmethod
     def create_response(cls,
                         message=None, message_is_ssml=False,
                         reprompt=None, reprompt_is_ssml=False,
                         title=None, content=None, card_type=None,
-                        end_session=True):
+                        end_session=True, **kwargs):
         """
-        Shortcut to create a fully baked ASKResponseSerializer
+        Shortcut to create the data structure for an alexa response
 
         Output Speech:
         message - text message to be spoken out by the Echo
@@ -37,32 +39,43 @@ class ResponseBuilder(object):
 
         end_session - flag to determine whether this interaction should end the session
 
+        kwargs - Anything added here will be persisted across requests if end_session is not True
+
         For more comprehensive documentation see:
         https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference
         """
         data = {}
-        data['shouldEndSession'] = end_session
-        if message:
-            data['outputSpeech'] = cls.create_speech(message=message,
-                                                     is_ssml=message_is_ssml)
-        if title or content:
-            data['card'] = cls.create_card(title=title,
-                                           content=content,
-                                           card_type=card_type)
-        if reprompt:
-            data['reprompt'] = cls.create_reprompt(message=reprompt,
-                                                   is_ssml=reprompt_is_ssml)
-        log.debug("ASK RESPONSE : {0}".format(data))
-        response = ASKResponseSerializer(data=data)
-        try:
-            response.is_valid(raise_exception=True)
-        except ValidationError as e:
-            log.exception("Error occured during response serialization!")
-            raise e
-        return response
+        data['version'] = cls.version
+        data['response'] = cls._create_response(message, message_is_ssml,
+                                               reprompt, reprompt_is_ssml,
+                                               title, content, card_type,
+                                               end_session)
+        data['sessionAttributes'] = kwargs
+        log.debug("Response Data: {0}".format(data))
+        return data
 
     @classmethod
-    def create_speech(cls, message=None, is_ssml=False):
+    def _create_response(cls,
+                        message=None, message_is_ssml=False,
+                        reprompt=None, reprompt_is_ssml=False,
+                        title=None, content=None, card_type=None,
+                        end_session=True):
+        data = {}
+        data['shouldEndSession'] = end_session
+        if message:
+            data['outputSpeech'] = cls._create_speech(message=message,
+                                                      is_ssml=message_is_ssml)
+        if title or content:
+            data['card'] = cls._create_card(title=title,
+                                            content=content,
+                                            card_type=card_type)
+        if reprompt:
+            data['reprompt'] = cls._create_reprompt(message=reprompt,
+                                                    is_ssml=reprompt_is_ssml)
+        return data
+
+    @classmethod
+    def _create_speech(cls, message=None, is_ssml=False):
         data = {}
         if is_ssml:
             data['type'] = "SSML"
@@ -70,24 +83,18 @@ class ResponseBuilder(object):
         else:
             data['type'] = "PlainText"
             data['text'] = message
-        speech = ASKOutputSpeechSerializer(data=data)
-        speech.is_valid(raise_exception=True)
-        return speech.validated_data
+        return data
 
     @classmethod
-    def create_reprompt(cls, message=None, is_ssml=False):
+    def _create_reprompt(cls, message=None, is_ssml=False):
         data = {}
-        data['outputSpeech'] = cls.create_speech(message=message,
+        data['outputSpeech'] = cls._create_speech(message=message,
                                                  is_ssml=is_ssml)
-        reprompt = ASKRempromptSerializer(data=data)
-        reprompt.is_valid(raise_exception=True)
-        return reprompt.validated_data
+        return data
 
     @classmethod
-    def create_card(cls, title=None, content=None, card_type=None):
+    def _create_card(cls, title=None, content=None, card_type=None):
         data = {"type": card_type or "Simple"}
         if title: data["title"] = title
         if content: data["content"] = content
-        card = ASKCardSerializer(data=data)
-        card.is_valid(raise_exception=True)
-        return card.validated_data
+        return data

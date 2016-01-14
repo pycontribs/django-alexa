@@ -4,7 +4,7 @@ django-alexa
 .. image:: https://badge.fury.io/py/django-alexa.svg
     :target: https://badge.fury.io/py/django-alexa
     :alt: Current Version
-    
+
 .. image:: https://travis-ci.org/rocktavious/django-alexa.svg?branch=master
     :target: https://travis-ci.org/rocktavious/django-alexa
     :alt: Build Status
@@ -19,11 +19,10 @@ django-alexa
 Amazon Alexa Skills Kit integration for Django
 
 The django-alexa framework leverages the django-rest-framework package to support
-the REST API that alexa skills need to use, but wraps up the bolierplate intent
-routing and schema creation that you'd handle.
+the REST API that alexa skills need to use, but wraps up the bolierplate for intent
+routing and response creation that you'd need to write yourself.
 
-Freeing you up to just write your alexa intents and utterances, and only
-needing to provide minimal configuration for your alexa skills.
+Freeing you up to just write your alexa intents and utterances.
 
 Quickstart
 ----------
@@ -42,15 +41,6 @@ In your django settings.py add the following:
         'django-alexa',
         ...
     ]
-    
-    # Note currently you cannot distinctly service multiple apps from one django project
-    # All intents and utterances will be generated for each app with an "alexa.py"
-    ALEXA_APP_IDS = ("Your Amazon Alexa App ID",)
-    ALEXA_ENABLE_REQUEST_VERIFICATON = True
-
-The ALEXA_* variables are used for incoming request validation for alexa
-skills request from amazon to your django app.  There is also a variable
-for turning this verification off during testing/debugging.
 
 In your django urls.py add the following:
 
@@ -61,15 +51,30 @@ In your django urls.py add the following:
         ...
     ]
 
-Your django app will now have a new api endpoint at /alexa/ask
-that will handle all the incoming request routing to intents for all
-amazon alexa skills pointed to this endpoint.
+Your django app will now have a new REST api endpoint at /alexa/ask
+that will handle all the incoming request and route them to the intents defined
+in any "alexa.py" file.
+
+Note: currently you cannot distinctly service multiple apps from one django project
+All intents and utterances will be generated for each django app with an "alexa.py"
+
+Set environment variables to configure the validation needs
+ALEXA_APP_IDS = ("Your Amazon Alexa App ID",) # comma seperate list of app id's
+ALEXA_REQUEST_VERIFICATON = True # Enables/Disable request verification
+
+If you set your django project to DEBUG=True django-alexa will also do some
+helpful debugging for you during request ingestion, such as catch all exceptions
+and give you back a stacktrace and error type in the alexa phone app.
+
+django-alexa is also configured to log useful information such as request body,
+request headers, validation as well as response data, this is all configured
+through the standard python logging setup using the logger 'django-alexa'
 
 In your django project make an alexa.py file.
 This file is where you define all your alexa intents and utterances.
-Each intent must return a valid alexa response.  To aid in this the
+Each intent must return a valid alexa response dictionary.  To aid in this the
 django-alexa api provides a helper class called ResponseBuilder.
-This class has a function to speed up response building.
+This class has a function to speed up building these dictionaries for responses.
 
 Please see the documentation on the class for a summary of the details or head
 to https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference
@@ -79,36 +84,54 @@ Example:
 
 .. code-block:: python
 
-    from django_alexa.api import intent, ResponseBuilder, Serializer, fields
-    
-    @intent(name="HelpIntent")
-    def help():
+    from rest_framework import serializers
+    from django_alexa.api import intent, ResponseBuilder
+    from django_alexa import fields
+
+    @intent
+    def LaunchRequest(session):
         """
+        Hogwarts is a go
         ---
-        this is my custom help utterance
+        launch
+        start
+        run
+        begin
+        open
         """
-        return ResponseBuilder.create_response(message="Help!")
-    
-    class HoroscopeSerializer(Serializer):
-        sign = fields.ChoiceField(label="HOROSCOPE_SIGNS", choices=(1,2,3,4,5))
-        date = fields.DateField()
-    
-    @intent(serializer=HoroscopeSerializer)
-    def GetHoroscope(sign, date):
+        return ResponseBuilder.create_response(message="Welcome to Hog warts school of witchcraft and wizardry! What house would you like to give points to?",
+                                               reprompt="What house would you like to give points to?",
+                                               end_session=False,
+                                               launched=True)
+
+    class PointsForHouseSerializer(serializers.Serializer):
+        house = fields.ChoiceField(label="HOUSE_LIST", choices=("gryffindor", "hufflepuff", "ravenclaw", "slytherin"))
+        points = fields.IntegerField()
+
+    @intent(slot=PointsForHouseSerializer)
+    def AddPointsToTeam(session, house, points):
         """
+        Direct response to add points to a team
         ---
-        what is the horoscope for {sign}
-        what will the horoscope for {sign} be on {date}
-        get me my horoscope
-        {sign}
+        {points} {house}
+        {points} points {house}
+        add {points} points to {house}
+        give {points} points to {house}
         """
-        return ResponseBuilder.create_response(message="Your horoscope is...")
+        kwargs = {}
+        kwargs['message'] = "{0} points added to house {1}.".format(points, house)
+        if session.get('launched'):
+            kwargs['message'] += " What house would you like to give points to?"
+            kwargs['reprompt'] = "What house would you like to give points to?"
+            kwargs['end_session'] = False
+            kwargs['launched'] = session['launched']
+        return ResponseBuilder.create_response(**kwargs)
 
 The django-alexa framework also provides two django management commands that
-will build your intents and utterances schema for you straight from the code.
+will build your intents and utterances schema for you by inspecting the code.
 The django-alexa framework also defines some best practice intents to help
 get you up and running even faster, but allows you to easily override them,
-as seen above with the custom HelpIntent.
+as seen above with the custom LaunchRequest.
 
 .. code-block:: bash
 
@@ -116,36 +139,36 @@ as seen above with the custom HelpIntent.
     {
         "intents": [
             {
-                "intent": "StopIntent", 
+                "intent": "StopIntent",
                 "slots": []
-            }, 
+            },
             {
-                "intent": "HelpIntent", 
+                "intent": "HelpIntent",
                 "slots": []
-            }, 
+            },
             {
-                "intent": "GetHoroscope", 
+                "intent": "GetHoroscope",
                 "slots": [
                     {
-                        "name": "sign", 
+                        "name": "sign",
                         "type": "HOROSCOPE_SIGNS"
-                    }, 
+                    },
                     {
-                        "name": "date", 
+                        "name": "date",
                         "type": "AMAZON.DATE"
                     }
                 ]
-            }, 
+            },
             {
-                "intent": "LaunchRequest", 
+                "intent": "LaunchRequest",
                 "slots": []
-            }, 
+            },
             {
-                "intent": "SessionEndedRequest", 
+                "intent": "SessionEndedRequest",
                 "slots": []
-            }, 
+            },
             {
-                "intent": "CancelIntent", 
+                "intent": "CancelIntent",
                 "slots": []
             }
         ]
@@ -177,13 +200,13 @@ TODO
 
 Outstanding improvements in order of importance
 
-* ASKOutputSpeechSerializer needs choice validation to validate that text or ssml is given
-* Add support for session variables
-* Needs Tests for ALL THE THINGS
-* Needs management command to output custom slot definitions
-* Investigate validation support for amazon slot types - add if needed
-** AMAZON.FOUR_DIGIT_NUMBER
-** AMAZON.US_CITY
-** AMAZON.US_FIRST_NAME
-** AMAZON.US_STATE
-* Allow multiple alexa skills to be served from one django project
+- ASKOutputSpeechSerializer needs choice validation to validate that text or ssml is given
+- Needs Tests for ALL THE THINGS
+- Needs management command to output custom slot definitions
+- Need to isolate code for managment commands so the api portion can become a seperate lib
+- Investigate validation support for amazon slot types - add if needed
+    - AMAZON.FOUR_DIGIT_NUMBER
+    - AMAZON.US_CITY
+    - AMAZON.US_FIRST_NAME
+    - AMAZON.US_STATE
+-  Allow multiple alexa skills to be served from one django project

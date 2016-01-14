@@ -21,7 +21,7 @@ class ResponseBuilder(object):
                         title=None, content=None, card_type=None,
                         end_session=True, **kwargs):
         """
-        Shortcut to create a fully baked ASKOutputSerializer
+        Shortcut to create the data structure for an alexa response
 
         Output Speech:
         message - text message to be spoken out by the Echo
@@ -39,7 +39,7 @@ class ResponseBuilder(object):
 
         end_session - flag to determine whether this interaction should end the session
 
-        kwargs - Anything added here will be persisted across reqeusts
+        kwargs - Anything added here will be persisted across requests if end_session is not True
 
         For more comprehensive documentation see:
         https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference

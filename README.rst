@@ -84,9 +84,9 @@ Example:
 
 .. code-block:: python
 
-    from rest_framework import serializers
-    from django_alexa.api import intent, ResponseBuilder
-    from django_alexa import fields
+    from django_alexa.api import fields, intent, Slots, ResponseBuilder
+
+    HOUSES = ("gryffindor", "hufflepuff", "ravenclaw", "slytherin")
 
     @intent
     def LaunchRequest(session):
@@ -103,15 +103,17 @@ Example:
                                                reprompt="What house would you like to give points to?",
                                                end_session=False,
                                                launched=True)
-
-    class PointsForHouseSerializer(serializers.Serializer):
-        house = fields.ChoiceField(label="HOUSE_LIST", choices=("gryffindor", "hufflepuff", "ravenclaw", "slytherin"))
-        points = fields.IntegerField()
-
-    @intent(slot=PointsForHouseSerializer)
-    def AddPointsToTeam(session, house, points):
+    
+    
+    class PointsForHouseSlots(Slots):
+        house = fields.AmazonCustom(label="HOUSE_LIST", choices=HOUSES)
+        points = fields.AmazonNumber()
+    
+    
+    @intent(slots=PointsForHouseSlots)
+    def AddPointsToHouse(session, house, points):
         """
-        Direct response to add points to a team
+        Direct response to add points to a house
         ---
         {points} {house}
         {points} points {house}
@@ -139,36 +141,40 @@ as seen above with the custom LaunchRequest.
     {
         "intents": [
             {
-                "intent": "StopIntent",
+                "intent": "StopIntent", 
                 "slots": []
-            },
+            }, 
             {
-                "intent": "HelpIntent",
-                "slots": []
-            },
-            {
-                "intent": "GetHoroscope",
+                "intent": "PointsForHouse", 
                 "slots": [
                     {
-                        "name": "sign",
-                        "type": "HOROSCOPE_SIGNS"
-                    },
+                        "name": "points", 
+                        "type": "AMAZON.NUMBER"
+                    }, 
                     {
-                        "name": "date",
-                        "type": "AMAZON.DATE"
+                        "name": "house", 
+                        "type": "HOUSE_LIST"
                     }
                 ]
-            },
+            }, 
             {
-                "intent": "LaunchRequest",
+                "intent": "HelpIntent", 
                 "slots": []
-            },
+            }, 
             {
-                "intent": "SessionEndedRequest",
+                "intent": "LaunchRequest", 
                 "slots": []
-            },
+            }, 
             {
-                "intent": "CancelIntent",
+                "intent": "SessionEndedRequest", 
+                "slots": []
+            }, 
+            {
+                "intent": "UnforgivableCurses", 
+                "slots": []
+            }, 
+            {
+                "intent": "CancelIntent", 
                 "slots": []
             }
         ]
@@ -177,11 +183,23 @@ as seen above with the custom LaunchRequest.
 .. code-block:: python
 
     >>> python manage.py alexa_utterances
-    HelpIntent this is my custom help utterance
-    GetHoroscope what is the horoscope for {sign}
-    GetHoroscope what will the horoscope for {sign} be on {date}
-    GetHoroscope get me my horoscope
-    GetHoroscope {sign}
+    StopIntent stop
+    StopIntent end
+    HelpIntent help
+    HelpIntent info
+    HelpIntent information
+    LaunchRequest launch
+    LaunchRequest start
+    LaunchRequest run
+    LaunchRequest begin
+    LaunchRequest open
+    PointsForHouse {points} {house}
+    PointsForHouse {points} points {house}
+    PointsForHouse add {points} points to {house}
+    PointsForHouse give {points} points to {house}
+    SessionEndedRequest quit
+    SessionEndedRequest nevermind
+    CancelIntent cancel
 
 Utterances can be added to your function's docstring seperating them from the
 regular docstring by placing them after '---'.

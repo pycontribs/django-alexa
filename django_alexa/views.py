@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
 from .serializers import ASKInputSerializer
-from .internal import ResponseBuilder, IntentsSchema, InternalError, validate_alexa_request, validate_reponse_limit
+from .internal import ResponseBuilder, IntentsSchema, validate_alexa_request, validate_reponse_limit
 
 
 log = logging.getLogger(__name__)
@@ -40,7 +40,8 @@ class ASKView(APIView):
                 try:
                     slot_value = slot_data['value']
                 except KeyError:
-                    slot_value = Undefined
+                    msg = "Slot {0} had no value given".format(slot_key)
+                    raise InternalError(msg)
                 intent_kwargs[slot_key] = slot_value
         else:
             intent_name = validated_data["request"]["type"]

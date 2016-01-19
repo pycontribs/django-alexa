@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
 from .serializers import ASKInputSerializer
-from .api import ResponseBuilder, IntentsSchema, InternalError, validate_alexa_request, validate_reponse_limit
+from .internal import ResponseBuilder, IntentsSchema, InternalError, Undefined, validate_alexa_request, validate_reponse_limit
 
 
 log = logging.getLogger(__name__)

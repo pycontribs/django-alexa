@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 import logging
 from rest_framework import serializers
-from .api import validate_app_ids, validate_char_limit
+from .internal import validate_app_ids, validate_char_limit
 
 log = logging.getLogger(__name__)
 

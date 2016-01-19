@@ -101,11 +101,10 @@ def validate_alexa_request(request_headers, request_body):
     value - a django request object
     """
     if ALEXA_REQUEST_VERIFICATON is True:
+        timestamp = json.loads(request_body)['request']['timestamp']
         if validate_current_timestamp(timestamp) is False:
             raise InternalError("Invalid Request Timestamp")
         if verify_cert_url(request_headers.get('HTTP_SIGNATURECERTCHAINURL')) is False:
             raise InternalError("Invalid Certificate Chain URL")
         if verify_signature(request_body, request_headers.get('HTTP_SIGNATURE'), request_headers.get('HTTP_SIGNATURECERTCHAINURL')) is False:
             raise InternalError("Invalid Request Signature")
-        timestamp = json.loads(request_body)['request']['timestamp']
-

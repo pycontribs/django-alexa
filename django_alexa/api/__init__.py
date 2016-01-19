@@ -1,2 +1,2 @@
-from rest_framework.serializers import Serializer as Slots
-from django_alexa.internal import intent, ResponseBuilder, Undefined
+from rest_framework.serializers import Serializer as Slots # NOQA
+from django_alexa.internal import intent, ResponseBuilder, Undefined # NOQA

@@ -29,17 +29,17 @@ class ResponseBuilder(object):
 
         Reprompt Speech:
         reprompt - text message to be spoken out by the Echo
-        reprompt_is_ssml - If true the "repropt" is ssml formated and should be treated as such
+        reprompt_is_ssml - If true the "reprompt" is ssml formated and should be treated as such
 
         Card:
-        card_type - A string describing the type of card to render.
+        card_type - A string describing the type of card to render. ("Simple", "LinkAccount")
         title - A string containing the title of the card. (not applicable for cards of type LinkAccount).
         content - A string containing the contents of the card (not applicable for cards of type LinkAccount).
                   Note that you can include line breaks in the content for a card of type Simple.
 
         end_session - flag to determine whether this interaction should end the session
 
-        kwargs - Anything added here will be persisted across requests if end_session is not True
+        kwargs - Anything added here will be persisted across requests if end_session is False
 
         For more comprehensive documentation see:
         https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference

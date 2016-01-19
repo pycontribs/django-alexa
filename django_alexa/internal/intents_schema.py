@@ -2,30 +2,9 @@ from __future__ import absolute_import
 import logging
 from string import Formatter
 from .exceptions import InternalError
+from .fields import AmazonField
 
 log = logging.getLogger(__name__)
-
-# TODO: shore up these field declrations because they are DRF specific now
-
-# This maps fields to the amazon intent slot types
-INTENT_SLOT_TYPES = {
-    "CharField": "AMAZON.LITERAL",
-    "IntegerField": "AMAZON.NUMBER",
-    "DateField": "AMAZON.DATE",
-    "TimeField": "AMAZON.TIME",
-    "DurationField": "AMAZON.DURATION",
-    "USCityField": "AMAZON.US_CITY",
-    "FirstNameField": "AMAZON.US_FIRST_NAME",
-    "USStateField": "AMAZON.US_STATE",
-    "FourDigitField": "AMAZON.FOUR_DIGIT_NUMBER",
-}
-
-# Choicefield does not have a amazon mapping because it represents
-# a custom slot type which has to have a defined choice set in the
-# alexa skills kit interaction model
-VALID_SLOT_TYPES = INTENT_SLOT_TYPES.keys() + [
-    "ChoiceField"
-]
 
 
 class IntentsSchema():
@@ -53,15 +32,15 @@ class IntentsSchema():
         return func(**kwargs)
 
     @classmethod
-    def register(cls, func, name, slot=None):
-        if slot:
-            s = slot()
+    def register(cls, func, name, slots=None):
+        if slots:
+            s = slots()
             for field_name, field in s.get_fields().items():
-                if field.__class__.__name__ not in VALID_SLOT_TYPES:
-                    msg = "'{0}' on slot '{1}' is not a valid alexa slot type"
-                    raise ValueError(msg.format(field_name,
-                                                s.__class__.__name__))
-        cls.intents[name] = (func, slot)
+                if issubclass(field.__class__, AmazonField) is not True:
+                    msg = "'{0}' on slot '{1}' is not a valid alexa slot field type"
+                    msg = msg.format(field_name, s.__class__.__name__)
+                    raise InternalError(msg)
+        cls.intents[name] = (func, slots)
 
     @classmethod
     def generate_schema(cls):
@@ -74,13 +53,12 @@ class IntentsSchema():
             if slot:
                 s = slot()
                 for field_name, field in s.get_fields().items():
-                    slot_type = INTENT_SLOT_TYPES.get(field.__class__.__name__,
-                                                 field.label)
+                    slot_type = field.get_slot_name()
                     if slot_type is None:
                         msg = "Intent '{0}' slot '{1}' does not have a valid slot_type"
                         raise InternalError(msg.format(intent_name, field_name))
                     if slot_type == "AMAZON.LITERAL":
-                        msg = "Please upgrade intent '{0}' slot '{1}' to a ChoiceField with choices!"
+                        msg = "Please upgrade intent '{0}' slot '{1}' to a AmazonCustom field with choices!"
                         log.warning(msg.format(intent_name, field_name))
                     slot_data = {
                         "name": field_name,
@@ -129,7 +107,7 @@ def intent(*args, **kwargs):
 
     def register(func):
         name = kwargs.get('name', func.__name__)
-        slot = kwargs.get('slot', None)
-        IntentsSchema.register(func, name, slot)
+        slots = kwargs.get('slots', None)
+        IntentsSchema.register(func, name, slots)
         return func
     return register if invoked else register(func)

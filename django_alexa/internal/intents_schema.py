@@ -2,51 +2,61 @@ from __future__ import absolute_import
 import logging
 from string import Formatter
 from .exceptions import InternalError
-from .fields import AmazonField
+from .fields import AmazonSlots, AmazonField, AmazonCustom
 
 log = logging.getLogger(__name__)
 
 
 class IntentsSchema():
+    apps = {}
     intents = {}
 
     @classmethod
-    def route(cls, name, session, data):
-        """Routes an intent to the proper method"""
-
-        if name not in cls.intents.keys():
-            msg = "Unable to find an intent defined for '{0}'".format(name)
+    def get_intent(cls, intent):
+        if intent not in cls.intents.keys():
+            msg = "Unable to find an intent defined for '{0}'".format(intent)
             raise InternalError(msg)
-        kwargs = {}
-        func, slot = cls.intents[name]
-        if slot:
-            if bool(data) is False:
-                msg = "Intent '{0}' requires slots data and none was provided".format(name)
-                raise InternalError(msg)
-            else:
-                slots = slot(data=data)
-                slots.is_valid(raise_exception=True)
-                kwargs.update(slots.data)
-        kwargs['session'] = session.get('attributes', {})
-        log.info("Routing: '{0}' with args {1} to '{2}.{3}'".format(name, kwargs, func.__module__, func.__name__))
-        return func(**kwargs)
+        return cls.intents[intent]
 
     @classmethod
-    def register(cls, func, name, slots=None):
+    def route(cls, session, intent, intent_kwargs):
+        """Routes an intent to the proper method"""
+        func, slot = cls.get_intent(intent)
+        if slot and bool(intent_kwargs) is False:
+            msg = "Intent '{0}' requires slots data and none was provided".format(intent)
+            raise InternalError(msg)
+        intent_kwargs['session'] = session.get('attributes', {})
+        msg = "Routing: '{0}' with args {1} to '{2}.{3}'".format(intent,
+                                                                 intent_kwargs,
+                                                                 func.__module__,
+                                                                 func.__name__)
+        log.info(msg)
+        return func(**intent_kwargs)
+
+    @classmethod
+    def register(cls, func, intent, slots=None, app="base"):
         if slots:
-            s = slots()
-            for field_name, field in s.get_fields().items():
-                if issubclass(field.__class__, AmazonField) is not True:
-                    msg = "'{0}' on slot '{1}' is not a valid alexa slot field type"
-                    msg = msg.format(field_name, s.__class__.__name__)
-                    raise InternalError(msg)
-        cls.intents[name] = (func, slots)
+            if not issubclass(slots, AmazonSlots):
+                msg = "'{0}' slot is not a valid alexa slot".format(slots.__name__)
+                logging.warn(msg)
+                slots = None
+            else:
+                s = slots()
+                for field_name, field in s.get_fields().items():
+                    if issubclass(field.__class__, AmazonField) is not True:
+                        msg = "'{0}' on slot '{1}' is not a valid alexa slot field type"
+                        msg = msg.format(field_name, s.__class__.__name__)
+                        raise InternalError(msg)
+        cls.intents[intent] = (func, slots)
+        if app not in cls.apps:
+            cls.apps[app] = []
+        cls.apps[app] += [intent]
 
     @classmethod
-    def generate_schema(cls):
-        """Generates the alexa intents schema json"""
+    def generate_schema(cls, app="base"):
+        """Generates the alexa intents schema json for an app"""
         intents = []
-        for intent_name in cls.intents.keys():
+        for intent_name in cls.apps[app]:
             intent_data = {"intent": intent_name,
                            "slots": []}
             _, slot = cls.intents[intent_name]
@@ -69,11 +79,11 @@ class IntentsSchema():
         return {"intents": intents}
 
     @classmethod
-    def generate_utterances(cls):
-        """Generates the alexa utterances schema for all intents"""
+    def generate_utterances(cls, app="base"):
+        """Generates the alexa utterances schema for all intents for an app"""
         utterance_format = "{0} {1}"
         utterances = []
-        for intent_name in cls.intents.keys():
+        for intent_name in cls.apps[app]:
             func, slot = cls.intents[intent_name]
             fields = []
             if slot:
@@ -96,18 +106,38 @@ class IntentsSchema():
                 utterances.append(utterance_format.format(intent_name, line.lower()))
         return utterances
 
+    @classmethod
+    def generate_custom_slots(cls, app="base"):
+        slots = []
+        for intent_name in cls.apps[app]:
+            func, slot = cls.intents[intent_name]
+            if slot:
+                s = slot()
+                for field_name, field in s.get_fields().items():
+                    if issubclass(field.__class__, AmazonCustom):
+                        msg = field.get_slot_name() + ":\n"
+                        for choice in field.get_choices():
+                            msg += "  " + choice + "\n"
+                        msg += "\n"
+                        slots.append(msg)
+        return slots
+
 
 def intent(*args, **kwargs):
     """
     Decorator that registers a function to the IntentsSchema
+    app - The specific app grouping you'd like to register this intent to - Default: base
+    intent - The intent you'd like to give this intent - Default: <The function name>
+    slots - A slot object with a set of fields to determine the argument needs of the intent
     """
     invoked = bool(not args or kwargs)
     if not invoked:
         func, args = args[0], ()
 
     def register(func):
-        name = kwargs.get('name', func.__name__)
+        app = kwargs.get('app', "base")
+        intent = kwargs.get('intent', func.__name__)
         slots = kwargs.get('slots', None)
-        IntentsSchema.register(func, name, slots)
+        IntentsSchema.register(func, intent, slots, app)
         return func
     return register if invoked else register(func)

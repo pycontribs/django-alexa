@@ -2,6 +2,11 @@
 from __future__ import absolute_import
 
 
+class AmazonSlots(object):
+    '''Base for all amazon slots'''
+    pass
+
+
 class AmazonField(object):
     '''Base for all amazon fields'''
     amazon_name = None
@@ -11,7 +16,9 @@ class AmazonField(object):
 
 
 class AmazonCustom(AmazonField):
-    pass
+
+    def get_choices(self):
+        return []
 
 
 class AmazonLiteral(AmazonField):

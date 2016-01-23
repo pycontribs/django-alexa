@@ -45,7 +45,12 @@ class ASKView(APIView):
                 intent_kwargs[slot_key] = slot_value
         else:
             intent_name = validated_data["request"]["type"]
-        data = IntentsSchema.route(intent_name, session, intent_kwargs)
+        _, slot = IntentsSchema.get_intent(intent_name)
+        if slot:
+            slots = slot(data=intent_kwargs)
+            slots.is_valid(raise_exception=True)
+            intent_kwargs = slots.data
+        data = IntentsSchema.route(session, intent_name, intent_kwargs)
         return Response(data=data, status=HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):

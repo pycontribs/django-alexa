@@ -1,12 +1,11 @@
 from __future__ import absolute_import
 import json
-from django.core.management.base import BaseCommand
-from ...internal import IntentsSchema
+from ..base import AlexaBaseCommand
 
 
-class Command(BaseCommand):
-    help = 'Prints the Alexa Skills Kit intents schema'
+class Command(AlexaBaseCommand):
+    help = 'Prints the Alexa Skills Kit intents schema for an app'
 
-    def handle(self, *args, **options):
-        data = IntentsSchema.generate_schema()
+    def do_work(self, app):
+        data = IntentsSchema.generate_schema(app=app)
         self.stdout.write(json.dumps(data, indent=4, sort_keys=True))

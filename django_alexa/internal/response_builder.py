@@ -65,7 +65,7 @@ class ResponseBuilder(object):
         data['shouldEndSession'] = end_session
         if message:
             if reprompt_append and reprompt is not None:
-                message += ". " + reprompt
+                message += " " + reprompt
                 message_is_ssml = True if any([message_is_ssml, reprompt_is_ssml]) else False
             data['outputSpeech'] = cls._create_speech(message=message,
                                                       is_ssml=message_is_ssml)

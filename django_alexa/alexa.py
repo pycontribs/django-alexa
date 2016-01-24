@@ -27,7 +27,7 @@ def CancelIntent(session):
     ---
     cancel
     """
-    return ResponseBuilder.create_response(message="Actions Canceled!",
+    return ResponseBuilder.create_response(message="Canceling actions not configured!",
                                            reprompt="What would you like to do next?",
                                            end_session=False)
 
@@ -41,7 +41,7 @@ def StopIntent(session):
     end
     nevermind
     """
-    return ResponseBuilder.create_response(message="Stopping Actions. Goodbye!")
+    return ResponseBuilder.create_response(message="Stopping actions not configured!")
 
 
 @intent

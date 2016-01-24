@@ -230,15 +230,32 @@ for that intent.
 The django-alexa framework will throw errors when these management commands run
 if things seem to be out of place or incorrect.
 
+
+Contributing
+------------
+
+- The master branch is meant to be stable. I usually work on unstable stuff on a personal branch.
+- Fork the master branch ( https://github.com/[my-github-username]/ask-alexa-pykit/fork )
+- Create your branch (git checkout -b my-branch)
+- Commit your changes (git commit -am 'added fixes for something')
+- Push to the branch (git push origin my-branch)
+- Create a new Pull Request (Travis CI will test your changes)
+- And you're done!
+
+- Bug fixes, bug reports and new documentation are all appreciated!
+
+
 TODO
 ----
 
 Outstanding improvements in order of importance
 
-- ASKOutputSpeechSerializer needs choice validation to validate that text or ssml is given
 - Needs Tests for ALL THE THINGS
+- Needs more detailed documentation then this readme
 - Investigate validation support for amazon slot types - add if needed
     - AMAZON.FOUR_DIGIT_NUMBER
     - AMAZON.US_CITY
     - AMAZON.US_FIRST_NAME
     - AMAZON.US_STATE
+
+Credits: Kyle Rockman 2016

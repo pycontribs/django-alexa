@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from ..base import AlexaBaseCommand
+from ...internal import IntentsSchema
 
 
 class Command(AlexaBaseCommand):

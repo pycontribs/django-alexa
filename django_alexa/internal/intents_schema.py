@@ -6,30 +6,43 @@ from .fields import AmazonSlots, AmazonField, AmazonCustom
 
 log = logging.getLogger(__name__)
 
+DEFAULT_INTENTS = [
+    "LaunchRequest",
+    "CancelIntent",
+    "StopIntent",
+    "HelpIntent",
+    "SessionEndedRequest"
+]
+
 
 class IntentsSchema():
     apps = {}
     intents = {}
 
     @classmethod
-    def get_intent(cls, intent):
-        if intent not in cls.intents.keys():
-            msg = "Unable to find an intent defined for '{0}'".format(intent)
-            raise InternalError(msg)
-        return cls.intents[intent]
+    def get_intent(cls, app, intent):
+        key_name = app + "." + intent
+        if key_name not in cls.intents.keys():
+            if intent in DEFAULT_INTENTS:
+                return cls.get_intent("base", intent)
+            else:
+                msg = "Unable to find an intent defined for '{0}'".format(key_name)
+                raise InternalError(msg)
+        return cls.intents[key_name]
 
     @classmethod
-    def route(cls, session, intent, intent_kwargs):
+    def route(cls, session, app, intent, intent_kwargs):
         """Routes an intent to the proper method"""
-        func, slot = cls.get_intent(intent)
+        func, slot = cls.get_intent(app, intent)
         if slot and bool(intent_kwargs) is False:
-            msg = "Intent '{0}' requires slots data and none was provided".format(intent)
+            msg = "Intent '{0}.{1}' requires slots data and none was provided".format(app, intent)
             raise InternalError(msg)
         intent_kwargs['session'] = session.get('attributes', {})
-        msg = "Routing: '{0}' with args {1} to '{2}.{3}'".format(intent,
-                                                                 intent_kwargs,
-                                                                 func.__module__,
-                                                                 func.__name__)
+        msg = "Routing: '{0}.{1}' with args {2} to '{3}.{4}'".format(app,
+                                                                     intent,
+                                                                     intent_kwargs,
+                                                                     func.__module__,
+                                                                     func.__name__)
         log.info(msg)
         return func(**intent_kwargs)
 
@@ -47,7 +60,7 @@ class IntentsSchema():
                         msg = "'{0}' on slot '{1}' is not a valid alexa slot field type"
                         msg = msg.format(field_name, s.__class__.__name__)
                         raise InternalError(msg)
-        cls.intents[intent] = (func, slots)
+        cls.intents[app + '.' + intent] = (func, slots)
         if app not in cls.apps:
             cls.apps[app] = []
         cls.apps[app] += [intent]
@@ -59,17 +72,17 @@ class IntentsSchema():
         for intent_name in cls.apps[app]:
             intent_data = {"intent": intent_name,
                            "slots": []}
-            _, slot = cls.intents[intent_name]
+            _, slot = cls.get_intent(app, intent_name)
             if slot:
                 s = slot()
                 for field_name, field in s.get_fields().items():
                     slot_type = field.get_slot_name()
                     if slot_type is None:
-                        msg = "Intent '{0}' slot '{1}' does not have a valid slot_type"
-                        raise InternalError(msg.format(intent_name, field_name))
+                        msg = "Intent '{0}.{1}' slot '{2}' does not have a valid slot_type"
+                        raise InternalError(msg.format(app, intent_name, field_name))
                     if slot_type == "AMAZON.LITERAL":
-                        msg = "Please upgrade intent '{0}' slot '{1}' to a AmazonCustom field with choices!"
-                        log.warning(msg.format(intent_name, field_name))
+                        msg = "Please upgrade intent '{0}.{1}' slot '{2}' to a AmazonCustom field with choices!"
+                        log.warning(msg.format(app, intent_name, field_name))
                     slot_data = {
                         "name": field_name,
                         "type": slot_type
@@ -84,7 +97,7 @@ class IntentsSchema():
         utterance_format = "{0} {1}"
         utterances = []
         for intent_name in cls.apps[app]:
-            func, slot = cls.intents[intent_name]
+            func, slot = cls.get_intent(app, intent_name)
             fields = []
             if slot:
                 s = slot()
@@ -99,23 +112,25 @@ class IntentsSchema():
                     if "|" in key:
                         key = key.split("|")[-1]
                     if key not in fields:
-                        msg = "Intent '{0}' utterance '{1}' has a missing the key in the slot '{2}'"
-                        raise ValueError(msg.format(intent_name,
+                        msg = "Intent '{0}.{1}' utterance '{2}' has a missing the key in the slot '{3}'"
+                        raise ValueError(msg.format(app,
+                                                    intent_name,
                                                     line,
                                                     s.__class__.__name__))
-                utterances.append(utterance_format.format(intent_name, line.lower()))
+                utterances.append(utterance_format.format(intent_name,
+                                                          line.lower()))
         return utterances
 
     @classmethod
     def generate_custom_slots(cls, app="base"):
         slots = []
         for intent_name in cls.apps[app]:
-            func, slot = cls.intents[intent_name]
+            func, slot = cls.get_intent(app, intent_name)
             if slot:
                 s = slot()
                 for field_name, field in s.get_fields().items():
                     if issubclass(field.__class__, AmazonCustom):
-                        msg = field.get_slot_name() + ":\n"
+                        msg = "\n" + field.get_slot_name() + ":\n"
                         for choice in field.get_choices():
                             msg += "  " + choice + "\n"
                         msg += "\n"

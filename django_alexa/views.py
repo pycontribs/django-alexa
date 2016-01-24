@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
 from .serializers import ASKInputSerializer
-from .internal import ResponseBuilder, IntentsSchema, InternalError, validate_alexa_request, validate_reponse_limit
+from .internal import ALEXA_APP_IDS, ResponseBuilder, IntentsSchema, InternalError, validate_alexa_request, validate_reponse_limit
 
 
 log = logging.getLogger(__name__)
@@ -33,6 +33,7 @@ class ASKView(APIView):
         log.info("Alexa Request Body: {0}".format(validated_data))
         intent_kwargs = {}
         session = validated_data['session']
+        app = ALEXA_APP_IDS[session['application']['applicationId']]
         if validated_data["request"]["type"] == "IntentRequest":
             intent_name = validated_data["request"]["intent"]["name"]
             for slot, slot_data in validated_data["request"]["intent"].get("slots", {}).items():
@@ -45,12 +46,12 @@ class ASKView(APIView):
                 intent_kwargs[slot_key] = slot_value
         else:
             intent_name = validated_data["request"]["type"]
-        _, slot = IntentsSchema.get_intent(intent_name)
+        _, slot = IntentsSchema.get_intent(app, intent_name)
         if slot:
             slots = slot(data=intent_kwargs)
             slots.is_valid(raise_exception=True)
             intent_kwargs = slots.data
-        data = IntentsSchema.route(session, intent_name, intent_kwargs)
+        data = IntentsSchema.route(session, app, intent_name, intent_kwargs)
         return Response(data=data, status=HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):

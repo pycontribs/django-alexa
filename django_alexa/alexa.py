@@ -15,7 +15,7 @@ def LaunchRequest(session):
     load
     begin
     """
-    return ResponseBuilder.create_response(message="Welcome. What would you like to do next?",
+    return ResponseBuilder.create_response(message="Welcome.",
                                            reprompt="What would you like to do next?",
                                            end_session=False)
 
@@ -27,7 +27,7 @@ def CancelIntent(session):
     ---
     cancel
     """
-    return ResponseBuilder.create_response(message="Actions Canceled! What would you like to do next?",
+    return ResponseBuilder.create_response(message="Actions Canceled!",
                                            reprompt="What would you like to do next?",
                                            end_session=False)
 
@@ -39,6 +39,7 @@ def StopIntent(session):
     ---
     stop
     end
+    nevermind
     """
     return ResponseBuilder.create_response(message="Stopping Actions. Goodbye!")
 
@@ -61,6 +62,5 @@ def SessionEndedRequest(session):
     Default End Session Intent
     ---
     quit
-    nevermind
     """
     return ResponseBuilder.create_response()

@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 import json
 from ..base import AlexaBaseCommand
+from ...internal import IntentsSchema
 
 
 class Command(AlexaBaseCommand):
@@ -8,4 +9,4 @@ class Command(AlexaBaseCommand):
 
     def do_work(self, app):
         data = IntentsSchema.generate_schema(app=app)
-        self.stdout.write(json.dumps(data, indent=4, sort_keys=True))
+        self.stdout.write(json.dumps(data, indent=4, sort_keys=True) + "\n")

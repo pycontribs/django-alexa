@@ -1,5 +1,8 @@
 sudo: false
 language: python
+branches:
+  only:
+    - master
 before_cache:
   - rm -f $HOME/.cache/pip/log/debug.log
 cache:
@@ -7,11 +10,11 @@ cache:
     - $HOME/.cache/pip
 python:
     - "2.7"
-install: 
+install:
     - "pip install -r requirements.txt"
     - "pip install -r test-requirements.txt"
     - "python setup.py develop"
-script: 
+script:
     - "flake8 django_alexa/"
     - "py.test --cov-report term --cov django_alexa django_alexa_tests/"
 after_success:

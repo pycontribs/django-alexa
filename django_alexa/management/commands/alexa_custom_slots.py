@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-import json
 from ..base import AlexaBaseCommand
 from ...internal import IntentsSchema
 

@@ -17,7 +17,7 @@ class ResponseBuilder(object):
     @classmethod
     def create_response(cls,
                         message=None, message_is_ssml=False,
-                        reprompt=None, reprompt_is_ssml=False,
+                        reprompt=None, reprompt_is_ssml=False, reprompt_append=True,
                         title=None, content=None, card_type=None,
                         end_session=True, **kwargs):
         """
@@ -30,6 +30,7 @@ class ResponseBuilder(object):
         Reprompt Speech:
         reprompt - text message to be spoken out by the Echo
         reprompt_is_ssml - If true the "reprompt" is ssml formated and should be treated as such
+        reprompt_append - If true the "reprompt" is append to the end of "message" for best practice voice interface design
 
         Card:
         card_type - A string describing the type of card to render. ("Simple", "LinkAccount")
@@ -47,7 +48,7 @@ class ResponseBuilder(object):
         data = {}
         data['version'] = cls.version
         data['response'] = cls._create_response(message, message_is_ssml,
-                                               reprompt, reprompt_is_ssml,
+                                               reprompt, reprompt_is_ssml, reprompt_append,
                                                title, content, card_type,
                                                end_session)
         data['sessionAttributes'] = kwargs
@@ -57,12 +58,15 @@ class ResponseBuilder(object):
     @classmethod
     def _create_response(cls,
                         message=None, message_is_ssml=False,
-                        reprompt=None, reprompt_is_ssml=False,
+                        reprompt=None, reprompt_is_ssml=False, reprompt_append=True,
                         title=None, content=None, card_type=None,
                         end_session=True):
         data = {}
         data['shouldEndSession'] = end_session
         if message:
+            if reprompt_append and reprompt is not None:
+                message += " " + reprompt
+                message_is_ssml = True if any([message_is_ssml, reprompt_is_ssml]) else False
             data['outputSpeech'] = cls._create_speech(message=message,
                                                       is_ssml=message_is_ssml)
         if title or content:
@@ -79,7 +83,7 @@ class ResponseBuilder(object):
         data = {}
         if is_ssml:
             data['type'] = "SSML"
-            data['ssml'] = message
+            data['ssml'] = "<speak>" + message + "</speak>"
         else:
             data['type'] = "PlainText"
             data['text'] = message

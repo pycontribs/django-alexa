@@ -55,12 +55,12 @@ Your django app will now have a new REST api endpoint at /alexa/ask
 that will handle all the incoming request and route them to the intents defined
 in any "alexa.py" file.
 
-Note: currently you cannot distinctly service multiple apps from one django project
-All intents and utterances will be generated for each django app with an "alexa.py"
-
 Set environment variables to configure the validation needs
 ALEXA_APP_IDS = ("Your Amazon Alexa App ID",) # comma seperate list of app id's
 ALEXA_REQUEST_VERIFICATON = True # Enables/Disable request verification
+
+You can service multiple alexa skills by organizing your intents by an app name.
+See the intent decorator's "app" argument for more information.
 
 If you set your django project to DEBUG=True django-alexa will also do some
 helpful debugging for you during request ingestion, such as catch all exceptions
@@ -99,17 +99,17 @@ Example:
         begin
         open
         """
-        return ResponseBuilder.create_response(message="Welcome to Hog warts school of witchcraft and wizardry! What house would you like to give points to?",
+        return ResponseBuilder.create_response(message="Welcome to Hog warts school of witchcraft and wizardry!",
                                                reprompt="What house would you like to give points to?",
                                                end_session=False,
                                                launched=True)
-    
-    
-    class PointsForHouseSlots(Slots):
+
+
+    class PointsForHouseSlots(fields.AmazonSlots):
         house = fields.AmazonCustom(label="HOUSE_LIST", choices=HOUSES)
         points = fields.AmazonNumber()
-    
-    
+
+
     @intent(slots=PointsForHouseSlots)
     def AddPointsToHouse(session, house, points):
         """
@@ -123,7 +123,6 @@ Example:
         kwargs = {}
         kwargs['message'] = "{0} points added to house {1}.".format(points, house)
         if session.get('launched'):
-            kwargs['message'] += " What house would you like to give points to?"
             kwargs['reprompt'] = "What house would you like to give points to?"
             kwargs['end_session'] = False
             kwargs['launched'] = session['launched']
@@ -141,46 +140,46 @@ as seen above with the custom LaunchRequest.
     {
         "intents": [
             {
-                "intent": "StopIntent", 
+                "intent": "StopIntent",
                 "slots": []
-            }, 
+            },
             {
-                "intent": "PointsForHouse", 
+                "intent": "PointsForHouse",
                 "slots": [
                     {
-                        "name": "points", 
+                        "name": "points",
                         "type": "AMAZON.NUMBER"
-                    }, 
+                    },
                     {
-                        "name": "house", 
+                        "name": "house",
                         "type": "HOUSE_LIST"
                     }
                 ]
-            }, 
+            },
             {
-                "intent": "HelpIntent", 
+                "intent": "HelpIntent",
                 "slots": []
-            }, 
+            },
             {
-                "intent": "LaunchRequest", 
+                "intent": "LaunchRequest",
                 "slots": []
-            }, 
+            },
             {
-                "intent": "SessionEndedRequest", 
+                "intent": "SessionEndedRequest",
                 "slots": []
-            }, 
+            },
             {
-                "intent": "UnforgivableCurses", 
+                "intent": "UnforgivableCurses",
                 "slots": []
-            }, 
+            },
             {
-                "intent": "CancelIntent", 
+                "intent": "CancelIntent",
                 "slots": []
             }
         ]
     }
 
-.. code-block:: python
+.. code-block:: bash
 
     >>> python manage.py alexa_utterances
     StopIntent stop
@@ -201,30 +200,62 @@ as seen above with the custom LaunchRequest.
     SessionEndedRequest nevermind
     CancelIntent cancel
 
+.. code-block:: bash
+
+    >>> python manage.py alexa_custom_slots
+    HOUSE_LIST:
+      gryffindor
+      hufflepuff
+      ravenclaw
+      slytherin
+
+There is also a convience that will print each of this grouped by app name
+
+.. code-block:: bash
+
+    >>> python manage.py alexa
+    ... All of the above data output ...
+
+
+
 Utterances can be added to your function's docstring seperating them from the
 regular docstring by placing them after '---'.
 
 Each line after '---' will be added as an utterance.
 
 When defining utterances with variables in them make sure all of the requested
-variables in any of the utterances are defined as fields in the serailizer
+variables in any of the utterances are defined as fields in the slots
 for that intent.
 
 The django-alexa framework will throw errors when these management commands run
 if things seem to be out of place or incorrect.
+
+
+Contributing
+------------
+
+- The master branch is meant to be stable. I usually work on unstable stuff on a personal branch.
+- Fork the master branch ( https://github.com/[my-github-username]/ask-alexa-pykit/fork )
+- Create your branch (git checkout -b my-branch)
+- Commit your changes (git commit -am 'added fixes for something')
+- Push to the branch (git push origin my-branch)
+- Create a new Pull Request (Travis CI will test your changes)
+- And you're done!
+
+- Bug fixes, bug reports and new documentation are all appreciated!
+
 
 TODO
 ----
 
 Outstanding improvements in order of importance
 
-- ASKOutputSpeechSerializer needs choice validation to validate that text or ssml is given
 - Needs Tests for ALL THE THINGS
-- Needs management command to output custom slot definitions
-- Need to isolate code for managment commands so the api portion can become a seperate lib
+- Needs more detailed documentation then this readme
 - Investigate validation support for amazon slot types - add if needed
     - AMAZON.FOUR_DIGIT_NUMBER
     - AMAZON.US_CITY
     - AMAZON.US_FIRST_NAME
     - AMAZON.US_STATE
--  Allow multiple alexa skills to be served from one django project
+
+Credits: Kyle Rockman 2016

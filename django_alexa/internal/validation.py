@@ -13,7 +13,8 @@ from .exceptions import InternalError
 
 log = logging.getLogger(__name__)
 
-ALEXA_APP_IDS = os.environ.get("ALEXA_APP_IDS", "").split(',')
+
+ALEXA_APP_IDS = dict([(str(os.environ[envvar]), envvar.replace("ALEXA_APP_ID_", "")) for envvar in os.environ.keys() if envvar.startswith('ALEXA_APP_ID_')])
 ALEXA_REQUEST_VERIFICATON = ast.literal_eval(os.environ.get('ALEXA_REQUEST_VERIFICATON', 'True'))
 
 
@@ -30,8 +31,8 @@ def validate_app_ids(value):
     """
     value - an alexa app id
     """
-    if value not in ALEXA_APP_IDS:
-        msg = "{0} is not a valid alexa skills application id".format(value)
+    if value not in ALEXA_APP_IDS.keys():
+        msg = "{0} is not one of the valid alexa skills application ids for this service".format(value)
         raise InternalError(msg)
 
 

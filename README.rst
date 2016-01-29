@@ -243,19 +243,7 @@ Contributing
 - And you're done!
 
 - Features, Bug fixes, bug reports and new documentation are all appreciated!
+- See the github issues page for outstanding things that could be worked on.
 
-
-TODO
-----
-
-Outstanding improvements in order of importance
-
-- Needs Tests for ALL THE THINGS
-- Needs more detailed documentation then this readme
-- Investigate validation support for amazon slot types - add if needed
-    - AMAZON.FOUR_DIGIT_NUMBER
-    - AMAZON.US_CITY
-    - AMAZON.US_FIRST_NAME
-    - AMAZON.US_STATE
 
 Credits: Kyle Rockman 2016

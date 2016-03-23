@@ -38,7 +38,7 @@ In your django settings.py add the following:
 .. code-block:: python
 
     INSTALLED_APPS = [
-        'django-alexa',
+        'django_alexa',
         ...
     ]
 

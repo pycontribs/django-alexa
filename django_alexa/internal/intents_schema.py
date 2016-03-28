@@ -32,8 +32,6 @@ class IntentsSchema():
 
     @classmethod
     def route(cls, session, app, intent, intent_kwargs):
-        if validated_data is None:
-            validated_data = {}
         """Routes an intent to the proper method"""
         func, slot = cls.get_intent(app, intent)
         if slot and bool(intent_kwargs) is False:

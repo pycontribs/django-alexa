@@ -31,7 +31,7 @@ class IntentsSchema():
         return cls.intents[key_name]
 
     @classmethod
-    def route(cls, session, app, intent, intent_kwargs, validated_data=None):
+    def route(cls, session, app, intent, intent_kwargs):
         if validated_data is None:
             validated_data = {}
         """Routes an intent to the proper method"""
@@ -39,8 +39,7 @@ class IntentsSchema():
         if slot and bool(intent_kwargs) is False:
             msg = "Intent '{0}.{1}' requires slots data and none was provided".format(app, intent)
             raise InternalError(msg)
-        intent_kwargs['session'] = session.get('attributes', {})
-        intent_kwargs['validated_data'] = validated_data
+        intent_kwargs['session'] = session
         msg = "Routing: '{0}.{1}' with args {2} to '{3}.{4}'".format(app,
                                                                      intent,
                                                                      intent_kwargs,

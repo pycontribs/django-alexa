@@ -38,7 +38,7 @@ In your django settings.py add the following:
 .. code-block:: python
 
     INSTALLED_APPS = [
-        'django-alexa',
+        'django_alexa',
         ...
     ]
 
@@ -51,13 +51,18 @@ In your django urls.py add the following:
         ...
     ]
 
-Your django app will now have a new REST api endpoint at /alexa/ask
+Your django app will now have a new REST api endpoint at `/alexa/ask/`
 that will handle all the incoming request and route them to the intents defined
 in any "alexa.py" file.
 
-Set environment variables to configure the validation needs
-ALEXA_APP_IDS = ("Your Amazon Alexa App ID",) # comma seperate list of app id's
-ALEXA_REQUEST_VERIFICATON = True # Enables/Disable request verification
+Set environment variables to configure the validation needs:
+
+.. code-block:: bash
+
+    ALEXA_APP_ID_DEFAULT="Your Amazon Alexa App ID DEFAULT"
+    ALEXA_APP_ID_OTHER="Your Amazon Alexa App ID OTHER" # for each app
+    ALEXA_REQUEST_VERIFICATON=True # Enables/Disable request verification
+
 
 You can service multiple alexa skills by organizing your intents by an app name.
 See the intent decorator's "app" argument for more information.
@@ -70,10 +75,10 @@ django-alexa is also configured to log useful information such as request body,
 request headers, validation as well as response data, this is all configured
 through the standard python logging setup using the logger 'django-alexa'
 
-In your django project make an alexa.py file.
+In your django project make an `alexa.py` file.
 This file is where you define all your alexa intents and utterances.
 Each intent must return a valid alexa response dictionary.  To aid in this the
-django-alexa api provides a helper class called ResponseBuilder.
+django-alexa api provides a helper class called `ResponseBuilder`.
 This class has a function to speed up building these dictionaries for responses.
 
 Please see the documentation on the class for a summary of the details or head
@@ -84,7 +89,7 @@ Example:
 
 .. code-block:: python
 
-    from django_alexa.api import fields, intent, Slots, ResponseBuilder
+    from django_alexa.api import fields, intent, ResponseBuilder
 
     HOUSES = ("gryffindor", "hufflepuff", "ravenclaw", "slytherin")
 

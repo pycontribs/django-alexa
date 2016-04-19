@@ -48,7 +48,7 @@ def validate_current_timestamp(value):
     log.debug("Alexa: {0}".format(utc_timestamp))
     log.debug("Server: {0}".format(utc_timestamp_now))
     log.debug("Delta: {0}".format(delta))
-    return False if delta > timedelta(minutes=2, seconds=30) else True
+    return False if abs(delta) > timedelta(minutes=2, seconds=30) else True
 
 
 def validate_char_limit(value):

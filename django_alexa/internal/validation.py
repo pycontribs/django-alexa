@@ -71,7 +71,8 @@ def verify_cert_url(cert_url):
     if parsed_url.scheme == 'https':
         if parsed_url.hostname == "s3.amazonaws.com":
             if os.path.normpath(parsed_url.path).startswith("/echo.api/"):
-                return True
+                if parsed_url.port == 443:
+                    return True
     return False
 
 

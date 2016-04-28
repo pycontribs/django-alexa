@@ -4,6 +4,7 @@ import traceback
 from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseRedirect
 from rest_framework.views import APIView
 from .serializers import ASKInputSerializer
 from .internal import ALEXA_APP_IDS, ResponseBuilder, IntentsSchema, validate_alexa_request, validate_reponse_limit
@@ -27,7 +28,22 @@ class ASKView(APIView):
             msg = "An internal error occured in the skill."
             log.exception(msg)
             data = ResponseBuilder.create_response(message=msg)
-        return Response(data=data, status=HTTP_200_OK)
+        # If we need to return an error code, do so.
+        # There is probably a better way of doing this, but this works. If anyone knows of a better way, please -
+        # submit a correction
+        try:
+            error = exc.args[1]
+            if error['error'] == 403:
+                log.debug(data)
+                return HttpResponseForbidden()
+            elif error['error'] == 400:
+                log.debug(data)
+                return HttpResponseBadRequest()
+            else:
+                # If we are passed an error code we should probably do something more here, but for now - this works.
+                return Response(data=data, status=HTTP_200_OK)
+        except:
+            return Response(data=data, status=HTTP_200_OK)
 
     def handle_request(self, validated_data):
         log.info("Alexa Request Body: {0}".format(validated_data))
@@ -68,6 +84,7 @@ class ASKView(APIView):
     def dispatch(self, request, *args, **kwargs):
         log.debug("#" * 10 + "Start Alexa Request" + "#" * 10)
         response = super(ASKView, self).dispatch(request, *args, **kwargs)
-        validate_reponse_limit(response.render().content)
+        if response.status_code == 200:
+            validate_reponse_limit(response.render().content)
         log.debug("#" * 10 + "End Alexa Request" + "#" * 10)
         return response

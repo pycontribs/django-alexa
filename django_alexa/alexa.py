@@ -3,7 +3,7 @@ from .api import intent, ResponseBuilder
 
 
 @intent
-def LaunchRequest(session):
+def LaunchRequest(**kwargs):
     """
     Default Start Session Intent
     ---
@@ -21,7 +21,7 @@ def LaunchRequest(session):
 
 
 @intent
-def CancelIntent(session):
+def CancelIntent(**kwargs):
     """
     Default Cancel Intent
     ---
@@ -33,7 +33,7 @@ def CancelIntent(session):
 
 
 @intent
-def StopIntent(session):
+def StopIntent(**kwargs):
     """
     Default Stop Intent
     ---
@@ -45,7 +45,7 @@ def StopIntent(session):
 
 
 @intent
-def HelpIntent(session):
+def HelpIntent(**kwargs):
     """
     Default Help Intent
     ---
@@ -57,7 +57,7 @@ def HelpIntent(session):
 
 
 @intent
-def SessionEndedRequest(session):
+def SessionEndedRequest(**kwargs):
     """
     Default End Session Intent
     ---

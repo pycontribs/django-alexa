@@ -100,7 +100,7 @@ def verify_signature(request_body, signature, cert_url):
         if crypto.verify(certificate, decoded_signature, request_body, 'sha1') is None:
             return True
     except:
-        raise InternalError("Error occured during signature validation",  {"error": 400})
+        raise InternalError("Error occured during signature validation", {"error": 400})
     return False
 
 

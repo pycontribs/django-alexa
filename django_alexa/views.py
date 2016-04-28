@@ -4,7 +4,7 @@ import traceback
 from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponseBadRequest, HttpResponseForbidden
 from rest_framework.views import APIView
 from .serializers import ASKInputSerializer
 from .internal import ALEXA_APP_IDS, ResponseBuilder, IntentsSchema, validate_alexa_request, validate_reponse_limit

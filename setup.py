@@ -6,6 +6,7 @@ def open_file(fname):
     return open(path.join(path.dirname(__file__), fname))
 
 setup(
+    license='MIT',
     setup_requires=['pbr', 'pyversion'],
     pbr=True,
     auto_version="PBR",

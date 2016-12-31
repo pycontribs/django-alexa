@@ -22,12 +22,12 @@ ALEXA_APP_IDS = dict([(str(os.environ[envvar]), envvar.replace("ALEXA_APP_ID_", 
 ALEXA_REQUEST_VERIFICATON = ast.literal_eval(os.environ.get('ALEXA_REQUEST_VERIFICATON', 'True'))
 
 
-def validate_reponse_limit(value):
+def validate_response_limit(value):
     """
     value - response content
     """
     if len(value.encode('utf-8')) > 1000 * 1000 * 24:
-        msg = "Alexa response content is bigger then 24 kilobytes: {0}".format(value)
+        msg = "Alexa response content is bigger than 24 kilobytes: {0}".format(value)
         raise InternalError(msg)
 
 

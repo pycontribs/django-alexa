@@ -64,7 +64,7 @@ def validate_char_limit(value):
     """
     data = json.dumps(value)
     if len(data) > 8000:
-        msg = "exceeded the total character limit of 8000: {1}".format(data)
+        msg = "exceeded the total character limit of 8000: {}".format(data)
         raise InternalError(msg)
 
 

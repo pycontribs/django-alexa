@@ -17,12 +17,18 @@ log = logging.getLogger(__name__)
 ALEXA_APP_IDS = dict([(str(os.environ[envvar]), envvar.replace("ALEXA_APP_ID_", "")) for envvar in os.environ.keys() if envvar.startswith('ALEXA_APP_ID_')])
 ALEXA_REQUEST_VERIFICATON = ast.literal_eval(os.environ.get('ALEXA_REQUEST_VERIFICATON', 'True'))
 
-
 def validate_reponse_limit(value):
-    """
+    """ 
     value - response content
+
+    Notice that we're checking the size of this data. We don't want to care if it is
+    encoded correctly.
+
+    also note that len(value) would be (#chars + 1) x (sizeof #char). Thus we've got the 
+    addl sys.getsizeof
     """
-    if len(value.encode('utf-8')) > 1000 * 1000 * 24:
+    import sys 
+    if sys.getsizeof(value) >= 1000 * 1000 * 24 + sys.getsizeof('a'):
         msg = "Alexa response content is bigger then 24 kilobytes: {0}".format(value)
         raise InternalError(msg)
 

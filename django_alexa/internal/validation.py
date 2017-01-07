@@ -7,9 +7,13 @@ import requests
 import base64
 import pytz
 from datetime import datetime, timedelta
-from urlparse import urlparse
 from OpenSSL import crypto
 from .exceptions import InternalError
+# Test for python 3
+try:
+    from urllib.parse import urlparse
+except:
+    from urlparse import urlparse
 
 log = logging.getLogger(__name__)
 
@@ -18,12 +22,12 @@ ALEXA_APP_IDS = dict([(str(os.environ[envvar]), envvar.replace("ALEXA_APP_ID_", 
 ALEXA_REQUEST_VERIFICATON = ast.literal_eval(os.environ.get('ALEXA_REQUEST_VERIFICATON', 'True'))
 
 
-def validate_reponse_limit(value):
+def validate_response_limit(value):
     """
     value - response content
     """
     if len(value.encode('utf-8')) > 1000 * 1000 * 24:
-        msg = "Alexa response content is bigger then 24 kilobytes: {0}".format(value)
+        msg = "Alexa response content is bigger than 24 kilobytes: {0}".format(value)
         raise InternalError(msg)
 
 
@@ -60,7 +64,7 @@ def validate_char_limit(value):
     """
     data = json.dumps(value)
     if len(data) > 8000:
-        msg = "exceeded the total character limit of 8000: {1}".format(data)
+        msg = "exceeded the total character limit of 8000: {}".format(data)
         raise InternalError(msg)
 
 

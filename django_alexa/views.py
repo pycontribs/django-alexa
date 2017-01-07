@@ -7,7 +7,7 @@ from rest_framework.status import HTTP_200_OK
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
 from rest_framework.views import APIView
 from .serializers import ASKInputSerializer
-from .internal import ALEXA_APP_IDS, ResponseBuilder, IntentsSchema, validate_alexa_request, validate_reponse_limit
+from .internal import ALEXA_APP_IDS, ResponseBuilder, IntentsSchema, validate_alexa_request, validate_response_limit
 
 
 log = logging.getLogger(__name__)
@@ -85,6 +85,6 @@ class ASKView(APIView):
         log.debug("#" * 10 + "Start Alexa Request" + "#" * 10)
         response = super(ASKView, self).dispatch(request, *args, **kwargs)
         if response.status_code == 200:
-            validate_reponse_limit(response.render().content)
+            validate_response_limit(response.render().content)
         log.debug("#" * 10 + "End Alexa Request" + "#" * 10)
         return response

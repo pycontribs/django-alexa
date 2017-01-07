@@ -5,16 +5,16 @@ django-alexa
     :target: https://badge.fury.io/py/django-alexa
     :alt: Current Version
 
-.. image:: https://travis-ci.org/rocktavious/django-alexa.svg?branch=master
-    :target: https://travis-ci.org/rocktavious/django-alexa
+.. image:: https://travis-ci.org/pycontribs/django-alexa.svg?branch=master
+    :target: https://travis-ci.org/pycontribs/django-alexa
     :alt: Build Status
 
-.. image:: https://coveralls.io/repos/rocktavious/django-alexa/badge.svg?branch=develop&service=github
-  :target: https://coveralls.io/github/rocktavious/django-alexa?branch=develop
+.. image:: https://coveralls.io/repos/github/pycontribs/django-alexa/badge.svg?branch=master
+    :target: https://coveralls.io/github/pycontribs/django-alexa?branch=master
 
-.. image:: https://requires.io/github/rocktavious/django-alexa/requirements.svg?branch=master
-     :target: https://requires.io/github/rocktavious/django-alexa/requirements/?branch=master
-     :alt: Requirements Status
+.. image:: https://requires.io/github/pycontribs/django-alexa/requirements.svg?branch=master
+    :target: https://requires.io/github/pycontribs/django-alexa/requirements/?branch=master
+    :alt: Requirements Status
 
 Amazon Alexa Skills Kit integration for Django
 
@@ -240,7 +240,7 @@ Contributing
 ------------
 
 - The master branch is meant to be stable. I usually work on unstable stuff on a personal branch.
-- Fork the master branch ( https://github.com/rocktavious/django-alexa/fork )
+- Fork the master branch ( https://github.com/pycontribs/django-alexa/fork )
 - Create your branch (git checkout -b my-branch)
 - Commit your changes (git commit -am 'added fixes for something')
 - Push to the branch (git push origin my-branch)

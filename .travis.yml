@@ -17,6 +17,6 @@ install:
     - "python setup.py develop"
 script:
     - "flake8 django_alexa/"
-    - "py.test --cov-report term --cov django_alexa django_alexa_tests/"
+    - "py.test"
 after_success:
   coveralls

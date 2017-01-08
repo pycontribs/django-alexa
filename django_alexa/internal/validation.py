@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 import os
+import sys
 import ast
 import logging
 import json
@@ -26,8 +27,8 @@ def validate_response_limit(value):
     """
     value - response content
     """
-    if len(value.encode('utf-8')) > 1000 * 1000 * 24:
-        msg = "Alexa response content is bigger than 24 kilobytes: {0}".format(value)
+    if sys.getsizeof(value) >= 1000 * 1000 * 24 + sys.getsizeof('a'):
+        msg = "Alexa response content is bigger then 24 kilobytes: {0}".format(value)
         raise InternalError(msg)
 
 

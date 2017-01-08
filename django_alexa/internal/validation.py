@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 import os
+import sys
 import ast
 import logging
 import json
@@ -7,9 +8,13 @@ import requests
 import base64
 import pytz
 from datetime import datetime, timedelta
-from urlparse import urlparse
 from OpenSSL import crypto
 from .exceptions import InternalError
+# Test for python 3
+try:
+    from urllib.parse import urlparse
+except:
+    from urlparse import urlparse
 
 log = logging.getLogger(__name__)
 
@@ -17,17 +22,10 @@ log = logging.getLogger(__name__)
 ALEXA_APP_IDS = dict([(str(os.environ[envvar]), envvar.replace("ALEXA_APP_ID_", "")) for envvar in os.environ.keys() if envvar.startswith('ALEXA_APP_ID_')])
 ALEXA_REQUEST_VERIFICATON = ast.literal_eval(os.environ.get('ALEXA_REQUEST_VERIFICATON', 'True'))
 
-def validate_reponse_limit(value):
-    """ 
-    value - response content
-
-    Notice that we're checking the size of this data. We don't want to care if it is
-    encoded correctly.
-
-    also note that len(value) would be (#chars + 1) x (sizeof #char). Thus we've got the 
-    addl sys.getsizeof
+def validate_response_limit(value):
     """
-    import sys 
+    value - response content
+    """
     if sys.getsizeof(value) >= 1000 * 1000 * 24 + sys.getsizeof('a'):
         msg = "Alexa response content is bigger then 24 kilobytes: {0}".format(value)
         raise InternalError(msg)
@@ -66,7 +64,7 @@ def validate_char_limit(value):
     """
     data = json.dumps(value)
     if len(data) > 8000:
-        msg = "exceeded the total character limit of 8000: {1}".format(data)
+        msg = "exceeded the total character limit of 8000: {}".format(data)
         raise InternalError(msg)
 
 

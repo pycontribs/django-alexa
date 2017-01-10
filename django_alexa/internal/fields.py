@@ -55,3 +55,6 @@ class AmazonUSState(AmazonField):
 
 class AmazonFourDigitNumber(AmazonField):
     amazon_name = "AMAZON.FOUR_DIGIT_NUMBER"
+
+class AmazonPostalAddress(AmazonField):
+    amazon_name = "AMAZON.PostalAddress"

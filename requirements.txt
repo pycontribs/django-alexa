@@ -4,4 +4,4 @@ djangorestframework>=3.1.0
 pyOpenSSL==16.2.0
 pytz==2015.4
 requests==2.12.1
-packaging==15.0; python_version < '3.0'
+packaging==15.0 ; python_version<'3'

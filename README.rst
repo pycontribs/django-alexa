@@ -63,6 +63,11 @@ Set environment variables to configure the validation needs:
     ALEXA_APP_ID_OTHER="Your Amazon Alexa App ID OTHER" # for each app
     ALEXA_REQUEST_VERIFICATON=True # Enables/Disable request verification
 
+    or define below properties in setting.py
+
+    ALEXA_APP_IDS = {"your_app_id": "your_app_name", {"your_app_id_other": "your_app_name_other"}}
+    # eg: @intent(app='your_app_name') or @intent # your_app_name must be "base"
+    ALEXA_REQUEST_VERIFICATON = True # Enables/Disable request verification
 
 You can service multiple alexa skills by organizing your intents by an app name.
 See the intent decorator's "app" argument for more information.

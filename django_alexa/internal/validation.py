@@ -10,6 +10,8 @@ import pytz
 from datetime import datetime, timedelta
 from OpenSSL import crypto
 from .exceptions import InternalError
+from django.conf import settings
+
 # Test for python 3
 try:
     from urllib.parse import urlparse
@@ -18,9 +20,14 @@ except:
 
 log = logging.getLogger(__name__)
 
-
-ALEXA_APP_IDS = dict([(str(os.environ[envvar]), envvar.replace("ALEXA_APP_ID_", "")) for envvar in os.environ.keys() if envvar.startswith('ALEXA_APP_ID_')])
-ALEXA_REQUEST_VERIFICATON = ast.literal_eval(os.environ.get('ALEXA_REQUEST_VERIFICATON', 'True'))
+if getattr(settings, 'ALEXA_APP_IDS', None):
+    ALEXA_APP_IDS = getattr(settings, 'ALEXA_APP_IDS')
+    ALEXA_REQUEST_VERIFICATON = getattr(settings, 'ALEXA_REQUEST_VERIFICATON', True)
+else:
+    ALEXA_APP_IDS = dict(
+        [(str(os.environ[envvar]), envvar.replace("ALEXA_APP_ID_", "")) for envvar in os.environ.keys() if
+         envvar.startswith('ALEXA_APP_ID_')])
+    ALEXA_REQUEST_VERIFICATON = ast.literal_eval(os.environ.get('ALEXA_REQUEST_VERIFICATON', 'True'))
 
 
 def validate_response_limit(value):

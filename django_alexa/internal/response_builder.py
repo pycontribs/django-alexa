@@ -19,6 +19,7 @@ class ResponseBuilder(object):
                         message=None, message_is_ssml=False,
                         reprompt=None, reprompt_is_ssml=False, reprompt_append=True,
                         title=None, content=None, card_type=None,
+                        card_image_small=None, card_image_large=None, card_text=None,
                         end_session=True, **kwargs):
         """
         Shortcut to create the data structure for an alexa response
@@ -33,10 +34,13 @@ class ResponseBuilder(object):
         reprompt_append - If true the "reprompt" is append to the end of "message" for best practice voice interface design
 
         Card:
-        card_type - A string describing the type of card to render. ("Simple", "LinkAccount")
+        card_type - A string describing the type of card to render. ("Simple", "Standard", "LinkAccount")
         title - A string containing the title of the card. (not applicable for cards of type LinkAccount).
-        content - A string containing the contents of the card (not applicable for cards of type LinkAccount).
+        content - A string containing the contents of the card (not applicable for cards of type Standard or LinkAccount).
                   Note that you can include line breaks in the content for a card of type Simple.
+        card_text - A string containing the contents of the card of type "Standard"
+        card_image_small - A URL to image to be shown in card (not applicable for cards of type Simple or LinkAccount)
+        card_image_large - A URL to image to be shown in card (not applicable for cards of type Simple or LinkAccount)
 
         end_session - flag to determine whether this interaction should end the session
 
@@ -44,12 +48,16 @@ class ResponseBuilder(object):
 
         For more comprehensive documentation see:
         https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference
+
+        For images in cards please see:
+        https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/providing-home-cards-for-the-amazon-alexa-app#image_hosting
         """
         data = {}
         data['version'] = cls.version
         data['response'] = cls._create_response(message, message_is_ssml,
                                                reprompt, reprompt_is_ssml, reprompt_append,
                                                title, content, card_type,
+                                               card_image_small, card_image_large, card_text,
                                                end_session)
         data['sessionAttributes'] = kwargs
         log.debug("Response Data: {0}".format(data))
@@ -60,6 +68,7 @@ class ResponseBuilder(object):
                         message=None, message_is_ssml=False,
                         reprompt=None, reprompt_is_ssml=False, reprompt_append=True,
                         title=None, content=None, card_type=None,
+                        card_image_small=None, card_image_large=None, card_text=None,
                         end_session=True):
         data = {}
         data['shouldEndSession'] = end_session
@@ -72,7 +81,10 @@ class ResponseBuilder(object):
         if title or content:
             data['card'] = cls._create_card(title=title,
                                             content=content,
-                                            card_type=card_type)
+                                            card_type=card_type,
+                                            card_image_small=card_image_small,
+                                            card_image_large=card_image_large,
+                                            card_text=card_text)
         if reprompt:
             data['reprompt'] = cls._create_reprompt(message=reprompt,
                                                     is_ssml=reprompt_is_ssml)
@@ -97,8 +109,11 @@ class ResponseBuilder(object):
         return data
 
     @classmethod
-    def _create_card(cls, title=None, content=None, card_type=None):
+    def _create_card(cls, title=None, content=None, card_type=None,
+                     card_image_small=None, card_image_large=None, card_text=None):
         data = {"type": card_type or "Simple"}
         if title: data["title"] = title
         if content: data["content"] = content
+        if card_text: data["text"] = card_text
+        if card_image_small: data["image"] = {"smallImageUrl": card_image_small, "largeImageUrl": card_image_large}
         return data

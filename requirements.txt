@@ -1,6 +1,6 @@
 pycrypto>=2.6.1
 Django>=1.8.0
 djangorestframework>=3.1.0
-pyOpenSSL==16.2.0
-pytz==2015.4
-requests==2.12.1
+pyOpenSSL>=18.0.0
+pytz>=2018.7
+requests>=2.20.0

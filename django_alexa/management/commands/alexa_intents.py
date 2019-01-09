@@ -5,7 +5,7 @@ from ...internal import IntentsSchema
 
 
 class Command(AlexaBaseCommand):
-    help = 'Prints the Alexa Skills Kit intents schema for an app'
+    help = "Prints the Alexa Skills Kit intents schema for an app"
 
     def do_work(self, app):
         data = IntentsSchema.generate_schema(app=app)

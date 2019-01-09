@@ -1,14 +1,16 @@
-'''These are the only fields supported by the Alexa skills kit'''
+"""These are the only fields supported by the Alexa skills kit"""
 from __future__ import absolute_import
 
 
 class AmazonSlots(object):
-    '''Base for all amazon slots'''
+    """Base for all amazon slots"""
+
     pass
 
 
 class AmazonField(object):
-    '''Base for all amazon fields'''
+    """Base for all amazon fields"""
+
     amazon_name = None
 
     def get_slot_name(self):
@@ -16,7 +18,6 @@ class AmazonField(object):
 
 
 class AmazonCustom(AmazonField):
-
     def get_choices(self):
         return []
 

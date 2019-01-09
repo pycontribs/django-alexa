@@ -39,6 +39,7 @@ In your django settings.py add the following:
 
     INSTALLED_APPS = [
         'django_alexa',
+        'rest_framework',  # don't forget to add this too
         ...
     ]
 

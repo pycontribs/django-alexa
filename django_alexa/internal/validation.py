@@ -12,13 +12,12 @@ from OpenSSL import crypto
 from .exceptions import InternalError
 
 # Test for python 3
-try:
+if sys.version_info > (3, 0):
     from urllib.parse import urlparse
-except:
+else:
     from urlparse import urlparse
 
 log = logging.getLogger(__name__)
-
 
 ALEXA_APP_IDS = dict(
     [
@@ -89,7 +88,12 @@ def verify_cert_url(cert_url):
     parsed_url = urlparse(cert_url)
     if parsed_url.scheme == "https":
         if parsed_url.hostname == "s3.amazonaws.com":
-            if os.path.normpath(parsed_url.path).startswith("/echo.api/"):
+            # normpath in windows converts forwards slashes to backslashes, hence replace
+            if (
+                os.path.normpath(parsed_url.path)
+                .replace("\\", "/")
+                .startswith("/echo.api/")
+            ):
                 if parsed_url.port is None:
                     return True
                 elif parsed_url.port == 443:
@@ -115,8 +119,10 @@ def verify_signature(request_body, signature, cert_url):
     try:
         if crypto.verify(certificate, decoded_signature, request_body, "sha1") is None:
             return True
-    except:
-        raise InternalError("Error occured during signature validation", {"error": 400})
+    except Exception as ex:
+        raise InternalError(
+            f"Error occurred during signature validation: {ex}", {"error": 400}
+        )
     return False
 
 

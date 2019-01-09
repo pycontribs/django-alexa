@@ -5,10 +5,11 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "*"
+pytest-cov = "*"
 mock = "*"
 tox = "*"
-black = "*"
 flake8 = "*"
+flake8-colors = "*"
 
 [packages]
 PyCryptodome = "*"
@@ -20,3 +21,6 @@ requests = "*"
 
 [requires]
 python_version = "3.6"
+
+[pipenv]
+allow_prereleases = true

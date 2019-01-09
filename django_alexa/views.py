@@ -47,7 +47,8 @@ class ASKView(APIView):
             else:
                 # If we are passed an error code we should probably do something more here, but for now - this works.
                 return Response(data=data, status=HTTP_200_OK)
-        except:
+        except Exception as ex:
+            log.exception(f"caught unhandled error: {ex}")
             return Response(data=data, status=HTTP_200_OK)
 
     def handle_request(self, validated_data):

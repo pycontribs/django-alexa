@@ -16,10 +16,12 @@ django-alexa
      :target: https://requires.io/github/lingster/django-alexa/requirements/?branch=upgrade-packages
      :alt: Requirements Status
 
-(note for some reason the pycontribs/django-alexa requires.io is not working, needs fixing)
 .. image:: https://requires.io/github/pycontribs/django-alexa/requirements.svg?branch=master
     :target: https://requires.io/github/pycontribs/django-alexa/requirements/?branch=master
     :alt: Requirements Status
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/ambv/black
 
 Amazon Alexa Skills Kit integration for Django
 

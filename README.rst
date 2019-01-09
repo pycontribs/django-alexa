@@ -12,6 +12,11 @@ django-alexa
 .. image:: https://coveralls.io/repos/github/pycontribs/django-alexa/badge.svg?branch=master
     :target: https://coveralls.io/github/pycontribs/django-alexa?branch=master
 
+.. image:: https://requires.io/github/lingster/django-alexa/requirements.svg?branch=upgrade-packages
+     :target: https://requires.io/github/lingster/django-alexa/requirements/?branch=upgrade-packages
+     :alt: Requirements Status
+
+(note for some reason the pycontribs/django-alexa requires.io is not working, needs fixing)
 .. image:: https://requires.io/github/pycontribs/django-alexa/requirements.svg?branch=master
     :target: https://requires.io/github/pycontribs/django-alexa/requirements/?branch=master
     :alt: Requirements Status

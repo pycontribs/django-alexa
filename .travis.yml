@@ -12,7 +12,7 @@ python:
     - "3.6"
 install:
     - "pip install pipenv"
-    - "pipenv install"
+    - "pipenv install --dev"
     - "python setup.py develop"
 script:
     - "flake8 django_alexa/"

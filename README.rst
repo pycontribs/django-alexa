@@ -243,6 +243,9 @@ Contributing
 - The master branch is meant to be stable. I usually work on unstable stuff on a personal branch.
 - Fork the master branch ( https://github.com/pycontribs/django-alexa/fork )
 - Create your branch (git checkout -b my-branch)
+- Install required dependencies via pipenv install
+- Run the unit tests via pytest or tox
+- Run tox, this will run black (for formatting code), flake8 for linting and pytests
 - Commit your changes (git commit -am 'added fixes for something')
 - Push to the branch (git push origin my-branch)
 - Create a new Pull Request (Travis CI will test your changes)

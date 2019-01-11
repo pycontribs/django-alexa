@@ -1,4 +1,4 @@
-'''This maps DRF serializer fields to ASK fields'''
+"""This maps DRF serializer fields to ASK fields"""
 import six
 from rest_framework import serializers
 from django_alexa.internal import fields
@@ -9,7 +9,6 @@ class AmazonSlots(fields.AmazonSlots, serializers.Serializer):
 
 
 class AmazonCustom(fields.AmazonCustom, serializers.ChoiceField):
-
     def get_slot_name(self):
         return self.label
 

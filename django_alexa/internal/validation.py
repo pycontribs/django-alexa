@@ -10,24 +10,32 @@ import pytz
 from datetime import datetime, timedelta
 from OpenSSL import crypto
 from .exceptions import InternalError
+
 # Test for python 3
-try:
+if sys.version_info > (3, 0):
     from urllib.parse import urlparse
-except:
+else:
     from urlparse import urlparse
 
 log = logging.getLogger(__name__)
 
-
-ALEXA_APP_IDS = dict([(str(os.environ[envvar]), envvar.replace("ALEXA_APP_ID_", "")) for envvar in os.environ.keys() if envvar.startswith('ALEXA_APP_ID_')])
-ALEXA_REQUEST_VERIFICATON = ast.literal_eval(os.environ.get('ALEXA_REQUEST_VERIFICATON', 'True'))
+ALEXA_APP_IDS = dict(
+    [
+        (str(os.environ[envvar]), envvar.replace("ALEXA_APP_ID_", ""))
+        for envvar in os.environ.keys()
+        if envvar.startswith("ALEXA_APP_ID_")
+    ]
+)
+ALEXA_REQUEST_VERIFICATON = ast.literal_eval(
+    os.environ.get("ALEXA_REQUEST_VERIFICATON", "True")
+)
 
 
 def validate_response_limit(value):
     """
     value - response content
     """
-    if sys.getsizeof(value) >= 1000 * 1000 * 24 + sys.getsizeof('a'):
+    if sys.getsizeof(value) >= 1000 * 1000 * 24 + sys.getsizeof("a"):
         msg = "Alexa response content is bigger then 24 kilobytes: {0}".format(value)
         raise InternalError(msg)
 
@@ -37,7 +45,9 @@ def validate_app_ids(value):
     value - an alexa app id
     """
     if value not in ALEXA_APP_IDS.keys():
-        msg = "{0} is not one of the valid alexa skills application ids for this service".format(value)
+        msg = "{0} is not one of the valid alexa skills application ids for this service".format(
+            value
+        )
         raise InternalError(msg)
 
 
@@ -76,9 +86,14 @@ def verify_cert_url(cert_url):
     if cert_url is None:
         return False
     parsed_url = urlparse(cert_url)
-    if parsed_url.scheme == 'https':
+    if parsed_url.scheme == "https":
         if parsed_url.hostname == "s3.amazonaws.com":
-            if os.path.normpath(parsed_url.path).startswith("/echo.api/"):
+            # normpath in windows converts forwards slashes to backslashes, hence replace
+            if (
+                os.path.normpath(parsed_url.path)
+                .replace("\\", "/")
+                .startswith("/echo.api/")
+            ):
                 if parsed_url.port is None:
                     return True
                 elif parsed_url.port == 443:
@@ -102,10 +117,12 @@ def verify_signature(request_body, signature, cert_url):
         return False
     decoded_signature = base64.b64decode(signature)
     try:
-        if crypto.verify(certificate, decoded_signature, request_body, 'sha1') is None:
+        if crypto.verify(certificate, decoded_signature, request_body, "sha1") is None:
             return True
-    except:
-        raise InternalError("Error occured during signature validation", {"error": 400})
+    except Exception as ex:
+        raise InternalError(
+            f"Error occurred during signature validation: {ex}", {"error": 400}
+        )
     return False
 
 
@@ -121,7 +138,14 @@ def validate_alexa_request(request_headers, request_body):
         # hence why I'm adding an argument when raising the error)
         if validate_current_timestamp(timestamp) is False:
             raise InternalError("Invalid Request Timestamp", {"error": 400})
-        if verify_cert_url(request_headers.get('HTTP_SIGNATURECERTCHAINURL')) is False:
+        if verify_cert_url(request_headers.get("HTTP_SIGNATURECERTCHAINURL")) is False:
             raise InternalError("Invalid Certificate Chain URL", {"error": 400})
-        if verify_signature(request_body, request_headers.get('HTTP_SIGNATURE'), request_headers.get('HTTP_SIGNATURECERTCHAINURL')) is False:
+        if (
+            verify_signature(
+                request_body,
+                request_headers.get("HTTP_SIGNATURE"),
+                request_headers.get("HTTP_SIGNATURECERTCHAINURL"),
+            )
+            is False
+        ):
             raise InternalError("Invalid Request Signature", {"error": 400})

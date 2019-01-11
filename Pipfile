@@ -1,0 +1,26 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = "*"
+pytest-cov = "*"
+mock = "*"
+tox = "*"
+flake8 = "*"
+flake8-colors = "*"
+
+[packages]
+PyCryptodome = "*"
+Django = "*"
+djangorestframework = "*"
+pyOpenSSL = "*"
+pytz = "*"
+requests = "*"
+
+[requires]
+python_version = "3.6"
+
+[pipenv]
+allow_prereleases = true

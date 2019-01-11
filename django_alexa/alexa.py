@@ -15,9 +15,11 @@ def LaunchRequest(**kwargs):
     load
     begin
     """
-    return ResponseBuilder.create_response(message="Welcome.",
-                                           reprompt="What would you like to do next?",
-                                           end_session=False)
+    return ResponseBuilder.create_response(
+        message="Welcome.",
+        reprompt="What would you like to do next?",
+        end_session=False,
+    )
 
 
 @intent
@@ -27,9 +29,11 @@ def CancelIntent(**kwargs):
     ---
     cancel
     """
-    return ResponseBuilder.create_response(message="Canceling actions not configured!",
-                                           reprompt="What would you like to do next?",
-                                           end_session=False)
+    return ResponseBuilder.create_response(
+        message="Canceling actions not configured!",
+        reprompt="What would you like to do next?",
+        end_session=False,
+    )
 
 
 @intent

@@ -22,6 +22,7 @@ class ASKApplicationSerializer(BaseASKSerializer):
 
 class ASKUserSerializer(BaseASKSerializer):
     userId = serializers.CharField()
+    accessToken = serializers.CharField(required=False, allow_null=True)
 
 
 class ASKSessionSerializer(BaseASKSerializer):

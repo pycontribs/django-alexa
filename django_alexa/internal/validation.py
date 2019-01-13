@@ -132,7 +132,7 @@ def validate_alexa_request(request_headers, request_body):
     value - a django request object
     """
     if ALEXA_REQUEST_VERIFICATON is True:
-        timestamp = json.loads(request_body.decode('utf8'))['request']['timestamp']
+        timestamp = json.loads(request_body.decode("utf8"))["request"]["timestamp"]
         # For each of the following errors, the alexa service expects an HTTP error code. This isn't well documented.
         # I'm going to return 403 forbidden just to be safe (but need to pass a message to the custom error handler,
         # hence why I'm adding an argument when raising the error)

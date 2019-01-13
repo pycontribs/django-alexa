@@ -10,6 +10,7 @@ mock = "*"
 tox = "*"
 flake8 = "*"
 flake8-colors = "*"
+pyversion3 = "*"
 
 [packages]
 PyCryptodome = "*"

@@ -6,7 +6,7 @@ from sys import version_info
 def open_file(fname):
     return open(path.join(path.dirname(__file__), fname))
 
-setup_requires = ['pbr']
+setup_requires = ['pbr', 'pyversion3']
 
 setup(
     license='MIT',

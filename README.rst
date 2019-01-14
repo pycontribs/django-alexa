@@ -12,16 +12,17 @@ django-alexa
 .. image:: https://coveralls.io/repos/github/pycontribs/django-alexa/badge.svg?branch=master
     :target: https://coveralls.io/github/pycontribs/django-alexa?branch=master
 
-.. image:: https://requires.io/github/lingster/django-alexa/requirements.svg?branch=upgrade-packages
-     :target: https://requires.io/github/lingster/django-alexa/requirements/?branch=upgrade-packages
+.. image:: https://requires.io/github/lingster/django-alexa/requirements.svg?branch=master
+     :target: https://requires.io/github/lingster/django-alexa/requirements/?branch=master
      :alt: Requirements Status
 
-.. image:: https://requires.io/github/pycontribs/django-alexa/requirements.svg?branch=master
-    :target: https://requires.io/github/pycontribs/django-alexa/requirements/?branch=master
-    :alt: Requirements Status
+.. image:: https://snyk.io/test/github/pycontribs/django-alexa/badge.svg?targetFile=requirements.txt
+    :target: https://snyk.io/test/github/pycontribs/django-alexa/?targetFile=requirements.txt
+    :alt: Vulnerbilities Status
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/ambv/black
+    :alt: Code Style: black
 
 Amazon Alexa Skills Kit integration for Django
 

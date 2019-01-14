@@ -20,6 +20,7 @@ pyOpenSSL = "*"
 pytz = "*"
 requests = "*"
 pyversion3 = "*"
+sphinx = "*"
 
 [requires]
 python_version = "3.6"

@@ -12,16 +12,17 @@ django-alexa
 .. image:: https://coveralls.io/repos/github/pycontribs/django-alexa/badge.svg?branch=master
     :target: https://coveralls.io/github/pycontribs/django-alexa?branch=master
 
-.. image:: https://requires.io/github/lingster/django-alexa/requirements.svg?branch=upgrade-packages
-     :target: https://requires.io/github/lingster/django-alexa/requirements/?branch=upgrade-packages
+.. image:: https://requires.io/github/lingster/django-alexa/requirements.svg?branch=master
+     :target: https://requires.io/github/lingster/django-alexa/requirements/?branch=master
      :alt: Requirements Status
 
-.. image:: https://requires.io/github/pycontribs/django-alexa/requirements.svg?branch=master
-    :target: https://requires.io/github/pycontribs/django-alexa/requirements/?branch=master
-    :alt: Requirements Status
+.. image:: https://snyk.io/test/github/pycontribs/django-alexa/badge.svg?targetFile=requirements.txt
+    :target: https://snyk.io/test/github/pycontribs/django-alexa/?targetFile=requirements.txt
+    :alt: Vulnerbilities Status
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/ambv/black
+    :alt: Code Style: black
 
 Amazon Alexa Skills Kit integration for Django
 
@@ -249,12 +250,14 @@ Contributing
 
 - The master branch is meant to be stable. I usually work on unstable stuff on a personal branch.
 - Fork the master branch ( https://github.com/pycontribs/django-alexa/fork )
-- Create your branch (git checkout -b my-branch)
+- Create your branch (`git checkout -b my-branch`)
 - Install required dependencies via pipenv install
 - Run the unit tests via pytest or tox
-- Run tox, this will run black (for formatting code), flake8 for linting and pytests
+- Run `tox`, this will run black (for formatting code), flake8 for linting and pytests
 - Commit your changes (git commit -am 'added fixes for something')
 - Push to the branch (git push origin my-branch)
+- If you want to merge code from the master branch you can set the upstream like this: 
+  `git remote add upstream https://github.com/pycontribs/django-alexa.git`
 - Create a new Pull Request (Travis CI will test your changes)
 - And you're done!
 

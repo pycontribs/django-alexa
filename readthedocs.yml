@@ -1,0 +1,10 @@
+---
+# .readthedocs.tml
+
+build:
+    image: latest
+
+python:
+    version: 3.6
+    setup_py_install: trueA
+    requirements_file: requirements.txt

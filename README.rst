@@ -32,6 +32,10 @@ routing and response creation that you'd need to write yourself.
 
 Freeing you up to just write your alexa intents and utterances.
 
+FUll Documentation
+------------------
+https://django-alexa.readthedocs.io/en/latest/
+
 Quickstart
 ----------
 

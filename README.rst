@@ -12,8 +12,16 @@ django-alexa
 .. image:: https://coveralls.io/repos/github/pycontribs/django-alexa/badge.svg?branch=master
     :target: https://coveralls.io/github/pycontribs/django-alexa?branch=master
 
-.. image:: https://requires.io/github/lingster/django-alexa/requirements.svg?branch=master
-     :target: https://requires.io/github/lingster/django-alexa/requirements/?branch=master
+.. image:: https://pyup.io/repos/github/pycontribs/django-alexa/shield.svg
+     :target: https://pyup.io/repos/github/pycontribs/django-alexa/
+     :alt: Updates
+
+.. image:: https://pyup.io/repos/github/pycontribs/django-alexa/python-3-shield.svg
+     :target: https://pyup.io/repos/github/pycontribs/django-alexa/
+     :alt: Python 3
+
+.. image:: https://requires.io/github/pycontribs/django-alexa/requirements.svg?branch=master
+     :target: https://requires.io/github/pycontribs/django-alexa/requirements/?branch=master
      :alt: Requirements Status
 
 .. image:: https://snyk.io/test/github/pycontribs/django-alexa/badge.svg?targetFile=requirements.txt

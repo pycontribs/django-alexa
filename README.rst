@@ -24,7 +24,7 @@ django-alexa
      :target: https://requires.io/github/pycontribs/django-alexa/requirements/?branch=master
      :alt: Requirements Status
 
-.. image:: https://snyk.io/test/github/pycontribs/django-alexa?targetFile=requirements.txt
+.. image:: https://snyk.io/test/github/pycontribs/django-alexa/badge.svg?targetFile=requirements.txt
      :target: https://snyk.io/test/github/pycontribs/django-alexa/badge.svg?targetFile=requirements.txt
      :alt: Vulnerbilities Status
 

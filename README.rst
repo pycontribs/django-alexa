@@ -25,12 +25,12 @@ django-alexa
      :alt: Requirements Status
 
 .. image:: https://snyk.io/test/github/pycontribs/django-alexa/badge.svg?targetFile=requirements.txt
-    :target: https://snyk.io/test/github/pycontribs/django-alexa/?targetFile=requirements.txt
-    :alt: Vulnerbilities Status
+     :target: https://snyk.io/test/github/pycontribs/django-alexa/badge.svg?targetFile=requirements.txt
+     :alt: Vulnerbilities Status
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-    :target: https://github.com/ambv/black
-    :alt: Code Style: black
+     :target: https://github.com/ambv/black
+     :alt: Code Style: black
 
 Amazon Alexa Skills Kit integration for Django
 

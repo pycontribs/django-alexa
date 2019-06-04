@@ -110,7 +110,7 @@ class ResponseBuilder(object):
             data["outputSpeech"] = cls._create_speech(
                 message=message, is_ssml=message_is_ssml
             )
-        if title or content:
+        if title or content or card_type == "LinkAccount":
             data["card"] = cls._create_card(
                 title=title,
                 content=content,

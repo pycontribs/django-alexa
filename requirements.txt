@@ -1,6 +1,6 @@
 PyCryptodome>=3.7.2
-Django>=2.1.5
-djangorestframework>=3.9.0
+Django>=2.1.6
+djangorestframework>=3.9.1
 pyOpenSSL>=18.0.0
 pytz>=2018.9
 requests>=2.21.0

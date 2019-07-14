@@ -12,17 +12,25 @@ django-alexa
 .. image:: https://coveralls.io/repos/github/pycontribs/django-alexa/badge.svg?branch=master
     :target: https://coveralls.io/github/pycontribs/django-alexa?branch=master
 
-.. image:: https://requires.io/github/lingster/django-alexa/requirements.svg?branch=master
-     :target: https://requires.io/github/lingster/django-alexa/requirements/?branch=master
+.. image:: https://pyup.io/repos/github/pycontribs/django-alexa/shield.svg
+     :target: https://pyup.io/repos/github/pycontribs/django-alexa/
+     :alt: Updates
+
+.. image:: https://pyup.io/repos/github/pycontribs/django-alexa/python-3-shield.svg
+     :target: https://pyup.io/repos/github/pycontribs/django-alexa/
+     :alt: Python 3
+
+.. image:: https://requires.io/github/pycontribs/django-alexa/requirements.svg?branch=master
+     :target: https://requires.io/github/pycontribs/django-alexa/requirements/?branch=master
      :alt: Requirements Status
 
 .. image:: https://snyk.io/test/github/pycontribs/django-alexa/badge.svg?targetFile=requirements.txt
-    :target: https://snyk.io/test/github/pycontribs/django-alexa/?targetFile=requirements.txt
-    :alt: Vulnerbilities Status
+     :target: https://snyk.io/test/github/pycontribs/django-alexa/badge.svg?targetFile=requirements.txt
+     :alt: Vulnerbilities Status
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-    :target: https://github.com/ambv/black
-    :alt: Code Style: black
+     :target: https://github.com/ambv/black
+     :alt: Code Style: black
 
 Amazon Alexa Skills Kit integration for Django
 
@@ -31,6 +39,10 @@ the REST API that alexa skills need to use, but wraps up the bolierplate for int
 routing and response creation that you'd need to write yourself.
 
 Freeing you up to just write your alexa intents and utterances.
+
+Full Documentation
+------------------
+https://django-alexa.readthedocs.io/en/latest/
 
 Quickstart
 ----------

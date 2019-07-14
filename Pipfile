@@ -19,6 +19,9 @@ djangorestframework = "*"
 pyOpenSSL = "*"
 pytz = "*"
 requests = "*"
+pyversion3 = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
 
 [requires]
 python_version = "3.6"

@@ -52,5 +52,6 @@ class AmazonUSState(fields.AmazonUSState, serializers.CharField):
 class AmazonFourDigitNumber(fields.AmazonFourDigitNumber, serializers.IntegerField):
     pass
 
+
 class AmazonPostalAddress(fields.AmazonPostalAddress, serializers.CharField):
     pass

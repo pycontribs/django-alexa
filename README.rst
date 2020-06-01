@@ -5,16 +5,32 @@ django-alexa
     :target: https://badge.fury.io/py/django-alexa
     :alt: Current Version
 
-.. image:: https://travis-ci.org/pycontribs/django-alexa.svg?branch=master
-    :target: https://travis-ci.org/pycontribs/django-alexa
+.. image:: https://travis-ci.com/pycontribs/django-alexa.svg?branch=master
+    :target: https://travis-ci.com/pycontribs/django-alexa
     :alt: Build Status
 
 .. image:: https://coveralls.io/repos/github/pycontribs/django-alexa/badge.svg?branch=master
     :target: https://coveralls.io/github/pycontribs/django-alexa?branch=master
 
+.. image:: https://pyup.io/repos/github/pycontribs/django-alexa/shield.svg
+     :target: https://pyup.io/repos/github/pycontribs/django-alexa/
+     :alt: Updates
+
+.. image:: https://pyup.io/repos/github/pycontribs/django-alexa/python-3-shield.svg
+     :target: https://pyup.io/repos/github/pycontribs/django-alexa/
+     :alt: Python 3
+
 .. image:: https://requires.io/github/pycontribs/django-alexa/requirements.svg?branch=master
-    :target: https://requires.io/github/pycontribs/django-alexa/requirements/?branch=master
-    :alt: Requirements Status
+     :target: https://requires.io/github/pycontribs/django-alexa/requirements/?branch=master
+     :alt: Requirements Status
+
+.. image:: https://snyk.io/test/github/pycontribs/django-alexa/badge.svg?targetFile=requirements.txt
+     :target: https://snyk.io/test/github/pycontribs/django-alexa/badge.svg?targetFile=requirements.txt
+     :alt: Vulnerbilities Status
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+     :target: https://github.com/ambv/black
+     :alt: Code Style: black
 
 Amazon Alexa Skills Kit integration for Django
 
@@ -23,6 +39,10 @@ the REST API that alexa skills need to use, but wraps up the bolierplate for int
 routing and response creation that you'd need to write yourself.
 
 Freeing you up to just write your alexa intents and utterances.
+
+Full Documentation
+------------------
+https://django-alexa.readthedocs.io/en/latest/
 
 Quickstart
 ----------
@@ -39,6 +59,7 @@ In your django settings.py add the following:
 
     INSTALLED_APPS = [
         'django_alexa',
+        'rest_framework',  # don't forget to add this too
         ...
     ]
 
@@ -241,9 +262,14 @@ Contributing
 
 - The master branch is meant to be stable. I usually work on unstable stuff on a personal branch.
 - Fork the master branch ( https://github.com/pycontribs/django-alexa/fork )
-- Create your branch (git checkout -b my-branch)
+- Create your branch (`git checkout -b my-branch`)
+- Install required dependencies via pipenv install
+- Run the unit tests via pytest or tox
+- Run `tox`, this will run black (for formatting code), flake8 for linting and pytests
 - Commit your changes (git commit -am 'added fixes for something')
 - Push to the branch (git push origin my-branch)
+- If you want to merge code from the master branch you can set the upstream like this: 
+  `git remote add upstream https://github.com/pycontribs/django-alexa.git`
 - Create a new Pull Request (Travis CI will test your changes)
 - And you're done!
 

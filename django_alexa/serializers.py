@@ -12,7 +12,6 @@ class Obj(object):
 
 
 class BaseASKSerializer(serializers.Serializer):
-
     def create(self, validated_data):
         return Obj(data=validated_data)
 
@@ -23,6 +22,7 @@ class ASKApplicationSerializer(BaseASKSerializer):
 
 class ASKUserSerializer(BaseASKSerializer):
     userId = serializers.CharField()
+    accessToken = serializers.CharField(required=False, allow_null=True)
 
 
 class ASKSessionSerializer(BaseASKSerializer):
@@ -64,7 +64,9 @@ class ASKRepromptSerializer(BaseASKSerializer):
 
 
 class ASKResponseSerializer(BaseASKSerializer):
-    outputSpeech = ASKOutputSpeechSerializer(required=False, validators=[validate_char_limit])
+    outputSpeech = ASKOutputSpeechSerializer(
+        required=False, validators=[validate_char_limit]
+    )
     card = ASKCardSerializer(required=False, validators=[validate_char_limit])
     reprompt = ASKRepromptSerializer(required=False)
     shouldEndSession = serializers.BooleanField()

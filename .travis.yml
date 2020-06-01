@@ -9,11 +9,10 @@ cache:
   directories:
     - $HOME/.cache/pip
 python:
-    - "2.7"
     - "3.6"
 install:
-    - "pip install -r requirements.txt"
-    - "pip install -r test-requirements.txt"
+    - "pip install pipenv"
+    - "pipenv install --dev"
     - "python setup.py develop"
 script:
     - "flake8 django_alexa/"

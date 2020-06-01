@@ -18,7 +18,6 @@ class TestValidation:
             msg = "Should raise exception, response > 24 kb"
         assert "InternalError" in str(exc_info), msg
 
-
     @mock.patch.dict(os.environ, {'ALEXA_APP_ID_DEFAULT': 'valid_app_id_default'})
     def test_validate_app_ids(self):
         reload(validation)
@@ -31,7 +30,6 @@ class TestValidation:
             msg = "Should raise exception, app id not valid"
         assert "InternalError" in str(exc_info), msg
 
-
     def test_validate_current_timestamp(self):
         current_time = datetime.utcnow()
         timestamp = current_time.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -43,7 +41,6 @@ class TestValidation:
         msg = 'Shoud not be a valid timestamp'
         assert not validation.validate_current_timestamp(invalid_timestamp), msg
 
-
     def test_validate_char_limit(self):
         valid_value = 'x' * 7998
         validation.validate_char_limit(valid_value)
@@ -53,7 +50,6 @@ class TestValidation:
             validation.validate_char_limit(invalid_value)
             msg = "Should raise exception, too many characters"
         assert "InternalError" in str(exc_info), msg
-
 
     def test_verify_cert_url(self):
         url = "https://s3.amazonaws.com/echo.api/test"
@@ -68,7 +64,6 @@ class TestValidation:
         url = None
         assert not validation.verify_cert_url(url), 'Should be an invalid url, given None'
 
-
     def test_verify_signature(self):
         request_body = 'request_body'
         signature = None
@@ -79,7 +74,6 @@ class TestValidation:
         signature = ''
         msg = 'Should fail, signature is empty'
         assert not validation.verify_signature(request_body, signature, cert_url), msg
-
 
     def test_validate_alexa_request(self):
         pass

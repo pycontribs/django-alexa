@@ -1,8 +1,9 @@
-coveralls==1.1
-flake8==2.5.0
-pytest-cov==2.2.0
-pytest-django==2.9.1
-pytest==2.8.3
+coveralls>=1.5.1
+flake8>=3.6.0
+flake8-colors>=0.1.6
+pytest-django>=3.4.5
+pytest-cov>=2.6.1
+pytest>=4.1.0
+mock==3.0.5
 unittest2==1.1.0
-mock==2.0.0
 

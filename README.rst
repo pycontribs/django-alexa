@@ -1,4 +1,4 @@
-django-alexa
+Django-alexa : An amazing framework
 ============
 
 .. image:: https://badge.fury.io/py/django-alexa.svg

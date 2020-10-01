@@ -34,8 +34,8 @@ django-alexa
 
 Amazon Alexa Skills Kit integration for Django
 
-The django-alexa framework leverages the django-rest-framework package to support
-the REST API that alexa skills need to use, but wraps up the bolierplate for intent
+The django-alexa framework leverages the django-rest-framework package not only to support
+the REST API that alexa skills need to use, but also to wrap up the bolierplate for intent
 routing and response creation that you'd need to write yourself.
 
 Freeing you up to just write your alexa intents and utterances.
